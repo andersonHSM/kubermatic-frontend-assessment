@@ -1,0 +1,18 @@
+/tmp
+/out-tsc
+
+/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/.pnp
+.pnp.js
+
+.vscode/*
+.idea/**/*
+
+Take-Home Assignment - Frontend Software Engineer.pdf
+assignment-data.zip
+assignment-data/*
+.gemini/*
+AGENTS.md
