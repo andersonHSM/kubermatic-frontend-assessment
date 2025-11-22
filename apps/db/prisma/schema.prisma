@@ -1,6 +1,3 @@
-// Prisma schema for the DB project (Postgres)
-// Migrations and client generation use DATABASE_URL from your .env
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,78 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  viewer
+  user
+}
+
+enum SupportStatus {
+  stable
+  deprecated
+}
+
+enum ClusterStatus {
+  running
+  pending
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model Version {
+  id            String        @id @default(uuid())
+  version       String        @unique @map("version")
+  isDefault     Boolean       @default(false)
+  supportStatus SupportStatus
+  clusters      Cluster[]
+
+  @@map("versions")
+}
+
+model Region {
+  id       String    @id
+  name     String
+  code     String    @unique
+  clusters Cluster[]
+
+  @@map("regions")
+}
+
+model Project {
+  id          String    @id
+  name        String
+  description String?
+  clusters    Cluster[]
+
+  @@map("projects")
+}
+
+model Cluster {
+  id        String        @id
+  name      String
+  nodeCount Int
+  status    ClusterStatus
+  labels    Json?
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  regionId String
+  region   Region @relation(fields: [regionId], references: [id], onDelete: Restrict)
+
+  versionId String
+  version   Version @relation(fields: [versionId], references: [id], onDelete: Restrict)
+
+  @@map("clusters")
 }
