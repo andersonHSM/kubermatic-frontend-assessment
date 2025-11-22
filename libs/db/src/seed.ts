@@ -4,7 +4,7 @@ import {
 	SupportStatus,
 	Role,
 	Prisma,
-} from '../output/generated/prisma';
+} from 'prisma-client-3d3e462c9d400de5bf7091fa01c8ddb07cb1325d2f8f722ada3a62e217de24fc';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 

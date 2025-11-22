@@ -24,4 +24,4 @@ AGENTS.md
 .github/instructions/nx.instructions.md
 .angular
 
-/apps/db/output/generated
+/libs/db/output/generated

@@ -9,7 +9,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/inspectionProfiles" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/jsLinters" />
-      <excludeFolder url="file://$MODULE_DIR$/apps/db/output/generated" />
+      <excludeFolder url="file://$MODULE_DIR$/libs/db/output/generated" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

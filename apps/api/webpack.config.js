@@ -20,6 +20,14 @@ module.exports = {
 			outputHashing: 'none',
 			generatePackageJson: true,
 			sourceMaps: true,
+			...(process.env.NODE_ENV !== 'production' && {
+				watch: true,
+				watchOptions: {
+					aggregateTimeout: 300,
+					poll: 1000,
+					ignored: /node_modules/,
+				},
+			}),
 		}),
 	],
 };

@@ -21,11 +21,8 @@ FROM node:${NODE_VERSION} AS runner
 ENV NODE_ENV=production
 WORKDIR /app
 
-# Copy pruned package manifests produced by Nx build
-COPY --from=base /workspace/dist/apps/api/package.json ./package.json
-COPY --from=base /workspace/dist/apps/api/package-lock.json ./package-lock.json
-
-# Install only production deps based on pruned lockfile
+# Install production dependencies from workspace manifest to ensure all runtime deps are present
+COPY package*.json ./
 RUN npm ci --omit=dev || npm install --omit=dev
 
 # Copy built output (includes generated package files and any workspace modules)

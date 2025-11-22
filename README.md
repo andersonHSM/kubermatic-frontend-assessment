@@ -32,6 +32,7 @@ docker compose up -d
 4) Access services:
 - Web (Angular via Nginx): http://localhost:8080
 - API (NestJS): http://localhost:3000/api
+  - Swagger docs: http://localhost:3000/api/docs
 - Postgres: localhost:5432
 
 5) View logs:
@@ -168,6 +169,12 @@ Troubleshooting
 Development notes
 - The API uses a global prefix `api`, set in `apps/api/src/main.ts`. The compose stack exposes the API at `http://localhost:${API_PORT}/api`.
 - If you want the Web container to proxy API requests under the same origin, uncomment the proxy block in `apps/web/nginx.conf` and update the target if needed.
+
+API documentation (Swagger)
+- Swagger UI is enabled for the NestJS API and available at:
+  - Local/dev: `http://localhost:3000/api/docs`
+  - Docker Compose: `http://localhost:${API_PORT}/api/docs` (default `${API_PORT}` is 3000)
+- Configuration lives in `apps/api/src/main.ts` using `@nestjs/swagger` with a Bearer auth scheme preset. Add DTOs and decorators (e.g., `@ApiTags()`, `@ApiProperty()`, `@ApiBearerAuth('bearer')`) in your controllers/services to enrich the generated OpenAPI spec.
 
 License
 This project is for assessment purposes. See repository terms if provided.
