@@ -41,6 +41,14 @@ docker compose logs -f
 Environment variables
 All values are read from the `.env` file at the repository root. See `.env.example` for a complete list and defaults.
 
+Notes about `.env` loading by Docker Compose:
+- Docker Compose automatically loads `.env` from the same directory as `docker-compose.yml` when you run commands from that directory.
+- If you invoke Compose from another directory (e.g., via CI or a script), pass the env file explicitly:
+  ```
+  docker compose --env-file /path/to/project/.env -f /path/to/project/docker-compose.yml up -d
+  ```
+  or `cd` to the project root first.
+
 Key variables:
 - POSTGRES_DB — database name (default `appdb`)
 - POSTGRES_USER — database user (default `appuser`)
