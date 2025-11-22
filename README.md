@@ -4,6 +4,7 @@ This repository contains an Nx workspace with:
 - API: NestJS application (served at `/api`)
 - Web: Angular SPA served by Nginx
 - Database: Postgres (latest)
+ - DB Project: Prisma-based migrations and seeds under `apps/db`
 
 Docker Compose is provided to build and run the entire stack locally. All configurable and sensitive settings have been moved to a `.env` file at the project root.
 
@@ -67,6 +68,61 @@ How it works
 - API image builds the NestJS app with Nx/webpack. The runtime image installs production dependencies from the root manifest to ensure NestJS packages are available at runtime.
 - Postgres runs the official `postgres:latest` image with a persistent volume (`postgres_data`). A healthcheck ensures the API waits until the database is ready.
 
+DB project (Prisma) — migrations and seeds
+The repository includes a dedicated Nx project `db` to manage database schema and seed data using Prisma.
+
+Files/structure:
+- Prisma schema: `apps/db/prisma/schema.prisma`
+- Seed script: `apps/db/src/seed.ts` (TypeScript, uses `@prisma/client`)
+
+Nx targets (run from project root):
+- Generate Prisma client (also runs on `npm install`):
+  ```
+  npx nx run db:generate
+  ```
+- Create/apply dev migration (prompts for a name if needed, updates DB and generates client):
+  ```
+  npx nx run db:migrate-dev
+  ```
+- Apply existing migrations in production-like mode:
+  ```
+  npx nx run db:migrate-deploy
+  ```
+- Reset database (DANGEROUS: drops DB):
+  ```
+  npx nx run db:migrate-reset
+  ```
+- Open Prisma Studio:
+  ```
+  npx nx run db:studio
+  ```
+- Run seed script:
+  ```
+  npx nx run db:seed
+  ```
+
+Database connection
+- All Prisma commands use `DATABASE_URL` from your `.env`. Ensure the Postgres service is running and accessible.
+- With Docker Compose up, the DB is available at `postgres://appuser:applocalpw@localhost:${POSTGRES_PORT}/appdb` on your host. The `.env.example` already provides a matching `DATABASE_URL`.
+
+Typical workflow
+1) Start database (and rest of stack):
+   ```
+   docker compose up -d postgres
+   # or bring up full stack
+   docker compose up -d
+   ```
+2) Evolve the schema in `apps/db/prisma/schema.prisma`.
+3) Create/apply a dev migration:
+   ```
+   npx nx run db:migrate-dev
+   ```
+4) Seed data:
+   ```
+   npx nx run db:seed
+   ```
+5) Commit the generated migration files under `apps/db/prisma/migrations/`.
+
 Common operations
 - Rebuild without cache (useful after dependency changes):
 ```
@@ -104,6 +160,10 @@ Troubleshooting
 
 - Port collisions:
   - Change `API_PORT`, `WEB_PORT`, and/or `POSTGRES_PORT` in `.env` to free ports and restart with `docker compose up -d`.
+
+- Prisma/DB:
+  - If Prisma cannot connect, confirm the `DATABASE_URL` in your `.env` points to the correct host/port. For local host access to Compose’s Postgres, use `localhost:${POSTGRES_PORT}`.
+  - If `@prisma/client` is missing after pulling changes, run `npm install` (which triggers `prisma generate`) or run `npx nx run db:generate` manually.
 
 Development notes
 - The API uses a global prefix `api`, set in `apps/api/src/main.ts`. The compose stack exposes the API at `http://localhost:${API_PORT}/api`.
