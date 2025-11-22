@@ -25,7 +25,7 @@
 		"migrate-reset": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "npx prisma migrate reset --force --skip-generate --schema apps/db/prisma/schema.prisma --skip-seed"
+				"command": "npx prisma migrate reset --force --skip-generate --schema apps/db/prisma/schema.prisma"
 			}
 		},
 		"studio": {
