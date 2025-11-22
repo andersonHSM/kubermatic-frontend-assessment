@@ -1,4 +1,10 @@
-import { PrismaClient, ClusterStatus, SupportStatus, Role, Prisma } from '@prisma/client';
+import {
+	PrismaClient,
+	ClusterStatus,
+	SupportStatus,
+	Role,
+	Prisma,
+} from '../output/generated/prisma';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 

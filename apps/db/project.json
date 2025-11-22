@@ -1,45 +1,45 @@
 {
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "name": "db",
-  "projectType": "application",
-  "sourceRoot": "apps/db/src",
-  "targets": {
-    "generate": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npx prisma generate --schema apps/db/prisma/schema.prisma"
-      }
-    },
-    "migrate-dev": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npx prisma migrate dev --schema apps/db/prisma/schema.prisma"
-      }
-    },
-    "migrate-deploy": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npx prisma migrate deploy --schema apps/db/prisma/schema.prisma"
-      }
-    },
-    "migrate-reset": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npx prisma migrate reset --force --skip-generate --schema apps/db/prisma/schema.prisma"
-      }
-    },
-    "studio": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "npx prisma studio --schema apps/db/prisma/schema.prisma"
-      }
-    },
-    "seed": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node -r ts-node/register apps/db/src/seed.ts"
-      }
-    }
-  },
-  "tags": []
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"name": "db",
+	"projectType": "application",
+	"sourceRoot": "apps/db/src",
+	"targets": {
+		"generate": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "npx prisma generate --schema apps/db/prisma/schema.prisma"
+			}
+		},
+		"migrate-dev": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "npx prisma migrate dev --schema apps/db/prisma/schema.prisma"
+			}
+		},
+		"migrate-deploy": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "npx prisma migrate deploy --schema apps/db/prisma/schema.prisma"
+			}
+		},
+		"migrate-reset": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "npx prisma migrate reset --force --skip-generate --schema apps/db/prisma/schema.prisma --skip-seed"
+			}
+		},
+		"studio": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "npx prisma studio --schema apps/db/prisma/schema.prisma"
+			}
+		},
+		"seed": {
+			"executor": "nx:run-commands",
+			"options": {
+				"command": "node -r ts-node/register apps/db/src/seed.ts"
+			}
+		}
+	},
+	"tags": []
 }
