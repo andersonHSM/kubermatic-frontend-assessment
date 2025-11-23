@@ -4,9 +4,16 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class JwtGuard implements CanActivate {
+	private readonly globalPrefix = '/api'; // this ideally would come from a configuration service
+	private readonly OPEN_ROUTES = [`${this.globalPrefix}/auth/login`];
 	constructor(private readonly jwtService: JwtService) {}
 	canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
 		const request = context.switchToHttp().getRequest();
+
+		if (this.OPEN_ROUTES.includes(request.url)) {
+			return true;
+		}
+
 		const authHeader = request.headers.authorization;
 
 		if (!authHeader || !authHeader.startsWith('Bearer ')) {

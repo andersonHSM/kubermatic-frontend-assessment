@@ -7,7 +7,7 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { JwtGuard } from 'apps/api/src/guards/jwt.guard';
+import { JwtGuard } from './guards/jwt.guard';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
