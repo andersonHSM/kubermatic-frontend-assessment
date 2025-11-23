@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { ProjectsService } from 'apps/api/src/projects/projects.service';
+import { ProjectsService } from './projects.service';
 
 @ApiBearerAuth()
 @Controller('projects')

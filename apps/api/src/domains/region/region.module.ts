@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { RegionService } from 'apps/api/src/region/region.service';
-import { RegionController } from 'apps/api/src/region/region.controller';
+import { RegionController } from './region.controller';
+import { RegionService } from './region.service';
 
 @Module({
 	controllers: [RegionController],

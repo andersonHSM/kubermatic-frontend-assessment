@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { VersionService } from 'apps/api/src/version/version.service';
-import { VersionController } from 'apps/api/src/version/version.controller';
+import { VersionController } from './version.controller';
+import { VersionService } from './version.service';
 
 @Module({
 	controllers: [VersionController],

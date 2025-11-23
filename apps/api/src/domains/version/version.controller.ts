@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { VersionService } from 'apps/api/src/version/version.service';
+import { VersionService } from './version.service';
 
 @ApiBearerAuth()
 @Controller('version')

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { VersionController } from 'apps/api/src/version/version.controller';
-import { VersionService } from 'apps/api/src/version/version.service';
+import { VersionController } from './version.controller';
+import { VersionService } from './version.service';
 
 describe('VersionController', () => {
 	let controller: VersionController;

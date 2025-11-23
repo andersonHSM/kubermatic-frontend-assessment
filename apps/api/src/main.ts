@@ -7,8 +7,8 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { JwtGuard } from './guards/jwt.guard';
 import { AppModule } from './app/app.module';
+import { JwtGuard } from './domains/guards/jwt.guard';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, { snapshot: true });
