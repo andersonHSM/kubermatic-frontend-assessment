@@ -6,4 +6,8 @@ import { inject, Injectable } from '@angular/core';
 })
 export class AuthService {
 	private readonly httpClient = inject(HttpClient);
+
+	public login(username: string, password: string) {
+		return this.httpClient.post('auth/login', { username, password });
+	}
 }

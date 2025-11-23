@@ -19,6 +19,6 @@ export class LoginPage {
 	protected password = '';
 
 	protected login(username: string, password: string) {
-		console.log({ username, password });
+		return this.authService.login(username, password).subscribe();
 	}
 }
