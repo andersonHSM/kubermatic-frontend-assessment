@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { filter, tap } from 'rxjs';
+import { filter, map, Observable, tap } from 'rxjs';
 
 import { LocalStorageService } from './local-storage.service';
 
@@ -23,6 +23,10 @@ export class AuthService {
 					}
 				}),
 			);
+	}
+
+	public isAuthenticated(): Observable<boolean> {
+		return this.httpClient.post('auth/token', {}).pipe(map(res => res !== null));
 	}
 
 	public getToken(): string | null {
