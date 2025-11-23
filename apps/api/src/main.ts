@@ -5,8 +5,10 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module';
+import { JwtService } from '@nestjs/jwt';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { JwtGuard } from 'apps/api/src/guards/jwt.guard';
+import { AppModule } from './app/app.module';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, { snapshot: true });
@@ -31,6 +33,8 @@ async function bootstrap() {
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup(`${globalPrefix}/docs`, app, document);
 	const port = process.env.PORT || 3000;
+	const jwtService = app.get(JwtService);
+	app.useGlobalGuards(new JwtGuard(jwtService));
 	await app.listen(port);
 	Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
 	Logger.log(`📘 Swagger docs available at: http://localhost:${port}/${globalPrefix}/docs`);
