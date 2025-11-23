@@ -19,4 +19,8 @@ export class AuthService {
 
 		return this.jwtService.signAsync({ email: currentUser.email });
 	}
+
+	public isAuthenticated(header: string) {
+		return this.jwtService.verifyAsync(header.split(' ')[1]);
+	}
 }
