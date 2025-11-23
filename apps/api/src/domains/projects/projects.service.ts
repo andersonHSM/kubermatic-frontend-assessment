@@ -10,10 +10,16 @@ export class ProjectsService {
 		if (query) {
 			args = {
 				...args,
-				where: { OR: [{ name: { contains: query } }, { description: { contains: query } }] },
+				where: {
+					OR: [
+						{ name: { contains: query, mode: 'insensitive' } },
+						{ description: { contains: query, mode: 'insensitive' } },
+					],
+				},
 			};
 		}
-		return this.prisma.region.findMany(args);
+
+		return this.prisma.project.findMany(args);
 	}
 
 	findOne(id: number) {

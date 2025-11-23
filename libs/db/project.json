@@ -1,7 +1,7 @@
 {
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"name": "db",
-	"projectType": "application",
+	"projectType": "library",
 	"sourceRoot": "libs/db/src",
 	"targets": {
 		"generate": {
@@ -37,7 +37,7 @@
 		"seed": {
 			"executor": "nx:run-commands",
 			"options": {
-				"command": "node -r ts-node/register libs/db/src/seed.ts"
+				"command": "node -r ts-node/register ./libs/db/src/seed.ts"
 			}
 		}
 	},
