@@ -1,5 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { ProjectsService } from './projects.service';
 
 @ApiBearerAuth()
@@ -8,8 +8,14 @@ export class ProjectsController {
 	constructor(private readonly projectsService: ProjectsService) {}
 
 	@Get()
-	findAll() {
-		return this.projectsService.findAll();
+	@ApiQuery({
+		name: 'search',
+		required: false,
+		description: 'Search by name or description',
+		type: String,
+	})
+	findAll(@Query('search') search = '') {
+		return this.projectsService.findAll(search);
 	}
 
 	@Get(':id')
