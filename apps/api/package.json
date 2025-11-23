@@ -1,10 +1,10 @@
 {
-  "dependencies": {
-    "@nestjs/mapped-types": "*"
-  },
-  "name": "api",
-  "version": "0.0.0",
-  "private": true,
-  "description": "Local package manifest for webpack/Nx when running with cwd=apps/api",
-  "license": "UNLICENSED"
+	"dependencies": {
+		"@nestjs/mapped-types": "*"
+	},
+	"name": "api",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Local package manifest for webpack/Nx when running with cwd=apps/api",
+	"license": "UNLICENSED"
 }
