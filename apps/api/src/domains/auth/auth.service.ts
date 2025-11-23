@@ -14,7 +14,7 @@ export class AuthService {
 		const currentUser = await this.usersService.findOne(email);
 
 		if (!currentUser || password !== currentUser.password) {
-			return new UnauthorizedException("User or password doesn't match");
+			throw new UnauthorizedException("User or password doesn't match");
 		}
 
 		return this.jwtService.signAsync({ email: currentUser.email });
