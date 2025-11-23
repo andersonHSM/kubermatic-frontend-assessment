@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
+
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
 	selector: 'app-login-page',
@@ -12,6 +14,7 @@ import { Password } from 'primeng/password';
 	styleUrl: './login-page.css',
 })
 export class LoginPage {
+	private readonly authService = inject(AuthService);
 	protected username = '';
 	protected password = '';
 
