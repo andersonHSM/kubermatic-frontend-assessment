@@ -26,6 +26,7 @@
 
         <p-button
                 label="Login"
+                [disabled]="isLoggingIn()"
                 (onClick)="login(username, password)"
         ></p-button>
     </div>
