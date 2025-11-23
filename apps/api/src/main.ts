@@ -3,16 +3,16 @@
  * This is only a minimal backend to get started.
  */
 
-import {Logger}                         from '@nestjs/common';
-import {NestFactory}                    from '@nestjs/core';
-import {JwtService}                     from '@nestjs/jwt';
-import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
-import {AppModule}                      from './app/app.module';
-import {JwtGuard}                       from './domains/guards/jwt.guard';
+import { Logger } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app/app.module';
+import { JwtGuard } from './domains/guards/jwt.guard';
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, { snapshot: true });
 	const globalPrefix = 'api';
+	const app = await NestFactory.create(AppModule, { snapshot: true });
 	app.setGlobalPrefix(globalPrefix);
 
 	const rawCorsOrigins = process.env.CORS_ORIGINS?.trim();
