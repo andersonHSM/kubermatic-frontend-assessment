@@ -4,12 +4,12 @@
             <input
                     class="w-full"
                     [autocomplete]="false"
-                    id="username"
+                    id="email"
                     pInputText
                     type="text"
-                    [(ngModel)]="username"
+                    [(ngModel)]="email"
             />
-            <label for="username">E-mail</label>
+            <label for="email">E-mail</label>
         </p-float-label>
         <p-float-label class="w-full">
             <p-password
@@ -27,7 +27,7 @@
         <p-button
                 label="Login"
                 [disabled]="isLoggingIn()"
-                (onClick)="login(username, password)"
+                (onClick)="login(email, password)"
         ></p-button>
     </div>
 </div>

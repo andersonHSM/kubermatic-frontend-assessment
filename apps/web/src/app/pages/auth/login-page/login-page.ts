@@ -16,11 +16,11 @@ import { AuthService } from '../../../services/auth.service';
 })
 export class LoginPage {
 	private readonly authService = inject(AuthService);
-	protected username = '';
+	protected email = '';
 	protected password = '';
 	protected isLoggingIn = signal(false);
 
-	protected login(username: string, password: string) {
+	protected login(email: string, password: string) {
 		if (this.isLoggingIn()) {
 			return;
 		}
@@ -28,7 +28,7 @@ export class LoginPage {
 		this.isLoggingIn.set(true);
 
 		return this.authService
-			.login(username, password)
+			.login(email, password)
 			.pipe(
 				tap({
 					next: () => {
