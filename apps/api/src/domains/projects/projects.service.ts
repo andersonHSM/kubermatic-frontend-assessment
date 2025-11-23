@@ -26,11 +26,22 @@ export class ProjectsService {
 		return `This action returns a #${id} project`;
 	}
 
-	public findProjectClusters(projectId: string, sortOrder: string) {
+	public findProjectClusters(projectId: string, sortOrder: string, name?: string, region?: string) {
 		return this.prisma.project.findMany({
 			where: { id: projectId },
 			include: {
 				clusters: {
+					where: {
+						...(name && { name: { contains: name, mode: 'insensitive' } }),
+						...(region && {
+							region: {
+								OR: [
+									{ code: { contains: region, mode: 'insensitive' } },
+									{ name: { contains: region, mode: 'insensitive' } },
+								],
+							},
+						}),
+					},
 					orderBy: {
 						name: sortOrder === 'desc' ? 'desc' : 'asc',
 					},

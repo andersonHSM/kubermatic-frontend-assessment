@@ -26,10 +26,14 @@ export class ProjectsController {
 	@Get(':project_id/cluster')
 	@ApiParam({ name: 'project_id', type: String })
 	@ApiQuery({ name: 'sortOrder', required: false, type: String, enum: ['asc', 'desc'] })
+	@ApiQuery({ name: 'name', required: false, type: String })
+	@ApiQuery({ name: 'region', required: false, type: String })
 	findProjectClusters(
 		@Param('project_id') projectId: string,
 		@Query('sortOrder') sortOrder: string,
+		@Query('name') name: string,
+		@Query('region') region: string,
 	) {
-		return this.projectsService.findProjectClusters(projectId, sortOrder);
+		return this.projectsService.findProjectClusters(projectId, sortOrder, name, region);
 	}
 }
