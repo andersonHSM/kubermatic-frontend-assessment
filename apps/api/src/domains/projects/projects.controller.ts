@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { ProjectsService } from './projects.service';
 
 @ApiBearerAuth()
@@ -21,5 +21,15 @@ export class ProjectsController {
 	@Get(':id')
 	findOne(@Param('id') id: string) {
 		return this.projectsService.findOne(+id);
+	}
+
+	@Get(':project_id/cluster')
+	@ApiParam({ name: 'project_id', type: String })
+	@ApiQuery({ name: 'sortOrder', required: false, type: String, enum: ['asc', 'desc'] })
+	findProjectClusters(
+		@Param('project_id') projectId: string,
+		@Query('sortOrder') sortOrder: string,
+	) {
+		return this.projectsService.findProjectClusters(projectId, sortOrder);
 	}
 }

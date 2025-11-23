@@ -25,4 +25,17 @@ export class ProjectsService {
 	findOne(id: number) {
 		return `This action returns a #${id} project`;
 	}
+
+	public findProjectClusters(projectId: string, sortOrder: string) {
+		return this.prisma.project.findMany({
+			where: { id: projectId },
+			include: {
+				clusters: {
+					orderBy: {
+						name: sortOrder === 'desc' ? 'desc' : 'asc',
+					},
+				},
+			},
+		});
+	}
 }
