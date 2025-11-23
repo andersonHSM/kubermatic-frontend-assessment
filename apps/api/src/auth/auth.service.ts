@@ -9,7 +9,8 @@ export class AuthService {
 	public async login({ email, password }: LoginDto) {
 		const currentUser = await this.usersService.findOne(email);
 
-		if (password !== currentUser?.password) {
+		console.log(currentUser);
+		if (!currentUser || password !== currentUser.password) {
 			return new UnauthorizedException("User or password doesn't match");
 		}
 	}
