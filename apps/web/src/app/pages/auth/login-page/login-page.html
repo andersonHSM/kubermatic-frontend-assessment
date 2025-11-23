@@ -1,1 +1,32 @@
-<p class="text-3xl font-bold underline">login-page works!</p>
+<div class="login-page w-screen h-screen p-3">
+    <div class="flex flex-col gap-6 w-100 h-full justify-center items-center mx-auto my-auto">
+        <p-float-label class="w-full">
+            <input
+                    class="w-full"
+                    [autocomplete]="false"
+                    id="username"
+                    pInputText
+                    type="text"
+                    [(ngModel)]="username"
+            />
+            <label for="username">E-mail</label>
+        </p-float-label>
+        <p-float-label class="w-full">
+            <p-password
+                    [(ngModel)]="password"
+                    [feedback]="false"
+                    class="w-full"
+                    autocomplete="false"
+                    id="password"
+                    toggleMask
+                    fluid
+            />
+            <label for="password">Password</label>
+        </p-float-label>
+
+        <p-button
+                label="Login"
+                (onClick)="login(username, password)"
+        ></p-button>
+    </div>
+</div>
