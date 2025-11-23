@@ -54,7 +54,7 @@
 			},
 			"configurations": {
 				"development": {
-					"args": ["--watch", "--inspect=0.0.0.0:9229"],
+					"args": ["--watch", "--debug"],
 					"buildTarget": "api:build:development"
 				},
 				"production": {
