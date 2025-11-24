@@ -4,7 +4,7 @@ import { SsrCookieService } from 'ngx-cookie-service-ssr';
 @Injectable({
 	providedIn: 'root',
 })
-export class LocalStorageService {
+export class StorageService {
 	private readonly jwtTokenCookie = 'token';
 
 	private readonly storage: Storage | null = this.getStorage();

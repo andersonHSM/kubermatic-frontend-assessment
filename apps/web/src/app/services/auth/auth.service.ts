@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { SsrCookieService } from 'ngx-cookie-service-ssr';
 import { catchError, filter, map, Observable, of, tap } from 'rxjs';
 
-import { LocalStorageService } from 'apps/web/src/app/services/local-storage.service';
+import { StorageService } from 'apps/web/src/app/services/storage.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -11,7 +11,7 @@ import { LocalStorageService } from 'apps/web/src/app/services/local-storage.ser
 export class AuthService {
 	private static readonly TOKEN_KEY = 'authToken';
 	private readonly httpClient = inject(HttpClient);
-	private readonly storage = inject(LocalStorageService);
+	private readonly storage = inject(StorageService);
 	private readonly ssrCookieService = inject(SsrCookieService);
 
 	public login(email: string, password: string) {
