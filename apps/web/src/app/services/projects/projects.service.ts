@@ -9,7 +9,12 @@ import { Project } from '@db/output/generated/prisma';
 export class ProjectsService {
 	private readonly httpClient = inject(HttpClient);
 
-	public listProjects() {
-		return this.httpClient.get<Project[]>('projects');
+	public listProjects(search?: string) {
+		let options = {};
+
+		if (search) {
+			options = { ...options, params: { search } };
+		}
+		return this.httpClient.get<Project[]>('projects', options);
 	}
 }

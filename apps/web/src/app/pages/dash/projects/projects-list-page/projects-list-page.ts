@@ -1,11 +1,13 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, model } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputText } from 'primeng/inputtext';
 import { Ripple } from 'primeng/ripple';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 
 import { ProjectsService } from '../../../../services/projects/projects.service';
 
@@ -16,10 +18,18 @@ import { ProjectsService } from '../../../../services/projects/projects.service'
 	styleUrl: './projects-list-page.css',
 })
 export class ProjectsListPage {
-	protected value = '';
+	protected searchTerm = model('');
 
 	private readonly projectsService = inject(ProjectsService);
-	protected projects$ = this.projectsService.listProjects();
+	protected projects$ = toObservable(this.searchTerm).pipe(
+		debounceTime(300),
+		distinctUntilChanged(),
+		switchMap(searchTerm => {
+			console.log(`Searching for projects with name: ${searchTerm}`);
+
+			return this.projectsService.listProjects(searchTerm);
+		}),
+	);
 
 	protected createProject() {
 		// TODO implement create project

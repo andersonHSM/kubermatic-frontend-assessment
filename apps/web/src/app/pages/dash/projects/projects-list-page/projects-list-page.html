@@ -3,7 +3,7 @@
     <div class="grid grid-cols-2 gap-4 mt-2">
         <p-float-label>
             <label for="search-project">Search</label>
-            <input id="search-project" class="w-fit" type="text" pInputText [(ngModel)]="value"/>
+            <input id="search-project" class="w-fit" type="text" pInputText [(ngModel)]="searchTerm"/>
         </p-float-label>
         <p-button label="Create new project" class="ml-auto" (onClick)="createProject()"/>
     </div>
