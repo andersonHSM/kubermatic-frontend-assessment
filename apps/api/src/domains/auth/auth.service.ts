@@ -24,6 +24,10 @@ export class AuthService {
 		if (!token) {
 			throw new UnauthorizedException('No token provided');
 		}
-		return this.jwtService.verifyAsync(token);
+		try {
+			return this.jwtService.verifyAsync(token);
+		} catch {
+			throw new UnauthorizedException('Invalid token');
+		}
 	}
 }

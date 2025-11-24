@@ -1,4 +1,5 @@
 import { Body, Controller, Post, Req, Res } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login-dto';
@@ -14,10 +15,15 @@ export class AuthController {
 		return token;
 	}
 
+	@ApiBearerAuth()
 	@Post('token')
 	public async isAuthenticated(@Req() req: Request, @Res() res: Response) {
-		await this.authService.isAuthenticated(req.headers.authorization?.split(' ').at(1));
-
-		return res.status(200).json({ authenticated: true });
+		try {
+			await this.authService.isAuthenticated(req.headers.authorization?.split(' ').at(1));
+			return res.status(200).json({ authenticated: true });
+		} catch (e) {
+			console.log(e);
+			return res.status(401).json({ authenticated: false });
+		}
 	}
 }
