@@ -1,10 +1,15 @@
 <div class="flex flex-col gap-4">
     <h1 class="text-3xl">Your projects</h1>
     <div class="grid grid-cols-2 gap-4 mt-2">
-        <p-float-label>
-            <label for="search-project">Search</label>
-            <input id="search-project" class="w-fit" type="text" pInputText [(ngModel)]="searchTerm"/>
-        </p-float-label>
+        <p-inputgroup class="w-fit">
+            <p-float-label class="w-fit">
+                <label for="search-project">Search</label>
+                <input id="search-project" class="w-fit" type="text" pInputText [(ngModel)]="searchTerm"/>
+                <p-inputgroup-addon class="w-fit cursor-pointer">
+                    <i class="w-fit pi pi-times " (click)="resetSearch()"></i>
+                </p-inputgroup-addon>
+            </p-float-label>
+        </p-inputgroup>
         <p-button label="Create new project" class="ml-auto" (onClick)="createProject()"/>
     </div>
     <div class="grid grid-cols-2 gap-4">
