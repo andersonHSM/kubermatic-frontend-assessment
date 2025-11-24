@@ -8,10 +8,13 @@
         <p-button label="Create new project" class="ml-auto" (onClick)="createProject()"/>
     </div>
     <div class="grid grid-cols-2 gap-4">
-        @for (project of projects; let index = $index; track index) {
-            <p-card header="header" subheader="subheader">
-                test
-            </p-card>
+        @for (project of projects$ | async; track project.id) {
+            <div pRipple class="box">
+                <p-card class="cursor-pointer" [header]="project.name" [subheader]="project?.description ?? ''">
+                    test
+                </p-card>
+            </div>
+
         }
     </div>
 </div>

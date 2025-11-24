@@ -18,6 +18,7 @@ export const appConfig: ApplicationConfig = {
 	providers: [
 		provideAnimationsAsync(),
 		providePrimeNG({
+			ripple: true,
 			theme: {
 				preset: Aura,
 			},
@@ -29,4 +30,3 @@ export const appConfig: ApplicationConfig = {
 		provideHttpClient(withFetch(), withInterceptors([baseUrlInterceptor, jwtInterceptor])),
 	],
 };
-
