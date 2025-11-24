@@ -5,9 +5,12 @@
             <p-card
                     pRipple
                     class="cursor-pointer"
-                    [header]="cluster.name"
-                    [subheader]="cluster?.region?.name ?? ''"
             >
+                <ng-template #title>{{ cluster.name }}</ng-template>
+                <ng-template #subtitle>
+                    <p class="mb-0.5">v{{ cluster.version.version }}</p>
+                    <p>{{ cluster.region.name }}</p>
+                </ng-template>
             </p-card>
 
         }
