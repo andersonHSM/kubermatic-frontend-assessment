@@ -47,11 +47,10 @@ app.use(
  * Handle all other requests by rendering the Angular application.
  */
 app.use('/**', (req, res, next) => {
-	console.log('req?.cookies:', req?.cookies);
 	res.cookie('server-cookie', randomUUID());
 
-	if (req?.cookies.token) {
-		res.cookie('token', req?.cookies.token);
+	if (req?.cookies.token && !req.headers.authorization?.startsWith('Bearer ')) {
+		req.headers.authorization = `Bearer ${req?.cookies.token}`;
 	}
 
 	angularApp

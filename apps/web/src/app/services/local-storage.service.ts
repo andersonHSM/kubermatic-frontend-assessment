@@ -1,10 +1,14 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { SsrCookieService } from 'ngx-cookie-service-ssr';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class LocalStorageService {
+	private readonly jwtTokenCookie = 'token';
+
 	private readonly storage: Storage | null = this.getStorage();
+	private readonly ssrCookieService = inject(SsrCookieService);
 
 	private getStorage(): Storage | null {
 		try {
@@ -27,7 +31,7 @@ export class LocalStorageService {
 
 	public getItem(key: string): string | null {
 		try {
-			return this.storage?.getItem(key) ?? null;
+			return this.storage?.getItem(key) ?? this.ssrCookieService.get(this.jwtTokenCookie);
 		} catch {
 			return null;
 		}
@@ -36,6 +40,7 @@ export class LocalStorageService {
 	public removeItem(key: string): void {
 		try {
 			this.storage?.removeItem(key);
+			this.ssrCookieService.delete(this.jwtTokenCookie);
 		} catch {
 			// ignore
 		}

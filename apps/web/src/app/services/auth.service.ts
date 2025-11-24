@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { SsrCookieService } from 'ngx-cookie-service-ssr';
 import { catchError, filter, map, Observable, of, tap } from 'rxjs';
 
 import { LocalStorageService } from './local-storage.service';
@@ -12,7 +11,6 @@ export class AuthService {
 	private static readonly TOKEN_KEY = 'authToken';
 	private readonly httpClient = inject(HttpClient);
 	private readonly storage = inject(LocalStorageService);
-	private readonly ssrCookieService = inject(SsrCookieService);
 
 	public login(email: string, password: string) {
 		return this.httpClient
@@ -21,7 +19,6 @@ export class AuthService {
 				filter(token => token !== null),
 				tap(token => {
 					if (token.length > 0) {
-						this.ssrCookieService.set('token', token);
 						this.storage.setItem(AuthService.TOKEN_KEY, token);
 					}
 				}),
