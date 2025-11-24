@@ -1,3 +1,15 @@
 <div class="flex flex-col gap-4">
     <h1 class="text-3xl">List Clusters</h1>
+    <div class="grid grid-cols-2 gap-4">
+        @for (cluster of clusters$ | async; track cluster.id) {
+            <p-card
+                    pRipple
+                    class="cursor-pointer"
+                    [header]="cluster.name"
+                    [subheader]="cluster?.region?.name ?? ''"
+            >
+            </p-card>
+
+        }
+    </div>
 </div>

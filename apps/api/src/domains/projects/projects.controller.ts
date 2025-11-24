@@ -23,7 +23,7 @@ export class ProjectsController {
 		return this.projectsService.findOne(+id);
 	}
 
-	@Get(':project_id/cluster')
+	@Get(':project_id/clusters')
 	@ApiParam({ name: 'project_id', type: String })
 	@ApiQuery({ name: 'sortOrder', required: false, type: String, enum: ['asc', 'desc'] })
 	@ApiQuery({ name: 'name', required: false, type: String })

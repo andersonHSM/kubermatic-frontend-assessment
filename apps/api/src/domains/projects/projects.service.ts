@@ -27,10 +27,11 @@ export class ProjectsService {
 	}
 
 	public findProjectClusters(projectId: string, sortOrder: string, name?: string, region?: string) {
-		return this.prisma.project.findMany({
+		return this.prisma.project.findFirstOrThrow({
 			where: { id: projectId },
 			include: {
 				clusters: {
+					include: { region: true, version: true },
 					where: {
 						...(name && { name: { contains: name, mode: 'insensitive' } }),
 						...(region && {
