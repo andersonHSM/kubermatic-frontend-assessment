@@ -15,7 +15,9 @@ export class AuthController {
 	}
 
 	@Post('token')
-	public async isAuthenticated(@Req() req: Request) {
-		return this.authService.isAuthenticated(req.cookies['token']);
+	public async isAuthenticated(@Req() req: Request, @Res() res: Response) {
+		await this.authService.isAuthenticated(req.headers.authorization?.split(' ').at(1));
+
+		return res.status(200).json({ authenticated: true });
 	}
 }

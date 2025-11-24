@@ -26,7 +26,7 @@ export class AuthService {
 	}
 
 	public isAuthenticated(): Observable<boolean> {
-		return this.httpClient.post('auth/token', {}, { withCredentials: true }).pipe(
+		return this.httpClient.post('auth/token', {}).pipe(
 			map(res => res !== null),
 			catchError(() => of(false)),
 		);

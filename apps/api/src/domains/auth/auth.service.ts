@@ -20,7 +20,10 @@ export class AuthService {
 		return this.jwtService.signAsync({ email: currentUser.email });
 	}
 
-	public isAuthenticated(token: string) {
+	public isAuthenticated(token?: string) {
+		if (!token) {
+			throw new UnauthorizedException('No token provided');
+		}
 		return this.jwtService.verifyAsync(token);
 	}
 }

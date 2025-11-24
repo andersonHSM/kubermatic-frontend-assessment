@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { logger } from 'nx/src/utils/logger';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -16,15 +15,14 @@ export class JwtGuard implements CanActivate {
 			return true;
 		}
 
-		const tokenCookie = request.cookies['token'];
-		logger.log('JWT token cookie:', tokenCookie);
+		const token = request.cookies['token'] ?? request.headers.authorization?.split(' ').at(1);
 
-		if (!tokenCookie) {
+		if (!token) {
 			throw new UnauthorizedException('Invalid token format');
 		}
 
 		try {
-			request.user = this.jwtService.verify(tokenCookie);
+			request.user = this.jwtService.verify(token);
 			return true;
 		} catch (error) {
 			console.error('JWT verification error:', error);

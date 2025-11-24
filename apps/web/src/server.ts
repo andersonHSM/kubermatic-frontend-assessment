@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { APP_BASE_HREF } from '@angular/common';
+import { REQUEST } from '@angular/core';
 import {
 	AngularNodeAppEngine,
 	createNodeRequestHandler,
@@ -57,8 +58,7 @@ app.use('/**', (req, res, next) => {
 		.handle(req, {
 			providers: [
 				{ provide: APP_BASE_HREF, useValue: req.baseUrl },
-				{ provide: 'REQUEST', useValue: req },
-				{ provide: 'RESPONSE', useValue: res },
+				{ provide: REQUEST, useValue: req },
 			],
 		})
 		.then(response => (response ? writeResponseToNodeResponse(response, res) : next()))
