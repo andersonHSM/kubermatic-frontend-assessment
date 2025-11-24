@@ -1,24 +1,34 @@
 <div class="flex flex-col gap-4">
     <h1 class="text-3xl">Your projects</h1>
-    <div class="grid grid-cols-2 gap-4 mt-2">
+    <div class="grid grid-cols-3 gap-4 mt-2">
         <p-inputgroup class="w-fit">
             <p-float-label class="w-fit">
                 <label for="search-project">Search</label>
-                <input id="search-project" class="w-fit" type="text" pInputText [(ngModel)]="searchTerm"/>
+                <input
+                        id="search-project"
+                        class="w-fit"
+                        type="text"
+                        pInputText
+                        [(ngModel)]="searchTerm"
+                />
                 <p-inputgroup-addon class="w-fit cursor-pointer">
-                    <i class="w-fit pi pi-times " (click)="resetSearch()"></i>
+                    <i
+                            class="w-fit pi pi-times"
+                            (click)="resetSearch()"
+                    ></i>
                 </p-inputgroup-addon>
             </p-float-label>
         </p-inputgroup>
-        <p-button label="Create new project" class="ml-auto" (onClick)="createProject()"/>
     </div>
     <div class="grid grid-cols-2 gap-4">
         @for (project of projects$ | async; track project.id) {
-            <div pRipple class="box">
-                <p-card class="cursor-pointer" [header]="project.name" [subheader]="project?.description ?? ''">
-                    test
-                </p-card>
-            </div>
+            <p-card
+                    pRipple
+                    class="cursor-pointer"
+                    [header]="project.name"
+                    [subheader]="project?.description ?? ''"
+            >
+            </p-card>
 
         }
     </div>
