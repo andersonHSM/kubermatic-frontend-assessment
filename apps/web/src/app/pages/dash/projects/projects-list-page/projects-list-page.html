@@ -1,1 +1,17 @@
-<p>projects-list-page works!</p>
+<div class="flex flex-col gap-4">
+    <h1 class="text-3xl">Your projects</h1>
+    <div class="grid grid-cols-2 gap-4 mt-2">
+        <p-float-label>
+            <label for="search-project">Search</label>
+            <input id="search-project" class="w-fit" type="text" pInputText [(ngModel)]="value"/>
+        </p-float-label>
+        <p-button label="Create new project" class="ml-auto" (onClick)="createProject()"/>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+        @for (project of projects; let index = $index; track index) {
+            <p-card header="header" subheader="subheader">
+                test
+            </p-card>
+        }
+    </div>
+</div>
