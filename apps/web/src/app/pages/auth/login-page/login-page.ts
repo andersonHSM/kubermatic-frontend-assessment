@@ -7,7 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { tap } from 'rxjs';
 
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from 'apps/web/src/app/services/auth/auth.service';
 
 @Component({
 	selector: 'app-login-page',

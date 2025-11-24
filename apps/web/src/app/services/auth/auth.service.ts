@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { SsrCookieService } from 'ngx-cookie-service-ssr';
 import { catchError, filter, map, Observable, of, tap } from 'rxjs';
 
-import { LocalStorageService } from './local-storage.service';
+import { LocalStorageService } from 'apps/web/src/app/services/local-storage.service';
 
 @Injectable({
 	providedIn: 'root',
