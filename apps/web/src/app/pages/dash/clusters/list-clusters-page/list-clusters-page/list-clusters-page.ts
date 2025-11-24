@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Card } from 'primeng/card';
 import { Ripple } from 'primeng/ripple';
-import { distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs';
+import { distinctUntilChanged, filter, map, switchMap } from 'rxjs';
 
 import { ClustersService } from '../../../../../services/clusters/clusters.service';
 
@@ -22,6 +22,5 @@ export class ListClustersPage {
 		map(params => params['id']),
 		distinctUntilChanged(),
 		switchMap(projectId => this.clustersService.listClusters(projectId)),
-		tap(clusters => console.log(clusters)),
 	);
 }

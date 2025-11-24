@@ -11,9 +11,8 @@ export class ClustersService {
 	private readonly httpClient = inject(HttpClient);
 
 	public listClusters(projectId: string) {
-		return this.httpClient.get<Project>(`projects/${projectId}/clusters`).pipe(
-			tap(console.log),
-			map(project => project.clusters),
-		);
+		return this.httpClient
+			.get<Project>(`projects/${projectId}/clusters`)
+			.pipe(map(project => project.clusters));
 	}
 }
