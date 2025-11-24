@@ -21,8 +21,7 @@ export class AuthController {
 		try {
 			await this.authService.isAuthenticated(req.headers.authorization?.split(' ').at(1));
 			return res.status(200).json({ authenticated: true });
-		} catch (e) {
-			console.log(e);
+		} catch {
 			return res.status(401).json({ authenticated: false });
 		}
 	}
