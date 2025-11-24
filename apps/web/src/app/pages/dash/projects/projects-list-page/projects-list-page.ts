@@ -2,6 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, model } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -18,13 +19,13 @@ import { ProjectsService } from '../../../../services/projects/projects.service'
 	imports: [
 		FormsModule,
 		FloatLabel,
-		Button,
 		Card,
 		InputText,
 		AsyncPipe,
 		Ripple,
 		InputGroup,
 		InputGroupAddon,
+		RouterLink,
 	],
 	templateUrl: './projects-list-page.html',
 	styleUrl: './projects-list-page.css',
