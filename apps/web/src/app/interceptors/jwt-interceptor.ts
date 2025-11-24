@@ -1,6 +1,5 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { logger } from 'nx/src/utils/logger';
 
 import { AuthService } from '../services/auth.service';
 
