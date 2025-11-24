@@ -1,5 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { logger } from 'nx/src/utils/logger';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -8,22 +10,21 @@ export class JwtGuard implements CanActivate {
 	private readonly OPEN_ROUTES = [`${this.globalPrefix}/auth/login`];
 	constructor(private readonly jwtService: JwtService) {}
 	canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-		const request = context.switchToHttp().getRequest();
+		const request = context.switchToHttp().getRequest<Request & { user?: object }>();
 
 		if (this.OPEN_ROUTES.includes(request.url)) {
 			return true;
 		}
 
-		const authHeader = request.headers.authorization;
+		const tokenCookie = request.cookies['token'];
+		logger.log('JWT token cookie:', tokenCookie);
 
-		if (!authHeader || !authHeader.startsWith('Bearer ')) {
+		if (!tokenCookie) {
 			throw new UnauthorizedException('Invalid token format');
 		}
 
-		const token = authHeader.split(' ')[1];
-
 		try {
-			request.user = this.jwtService.verifyAsync(token);
+			request.user = this.jwtService.verify(tokenCookie);
 			return true;
 		} catch (error) {
 			console.error('JWT verification error:', error);

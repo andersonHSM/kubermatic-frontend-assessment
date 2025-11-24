@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { SsrCookieService } from 'ngx-cookie-service-ssr';
 import { ButtonModule } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
@@ -15,12 +16,18 @@ import { AuthService } from '../../../services/auth.service';
 	templateUrl: './login-page.html',
 	styleUrl: './login-page.css',
 })
-export class LoginPage {
-	private readonly authService = inject(AuthService);
-	private readonly router = inject(Router);
+export class LoginPage implements OnInit {
 	protected email = '';
 	protected password = '';
 	protected isLoggingIn = signal(false);
+	private readonly authService = inject(AuthService);
+	private readonly cookieService = inject(SsrCookieService);
+	private readonly router = inject(Router);
+
+	ngOnInit(): void {
+		console.log('onInit');
+		// this.cookieService.deleteAll();
+	}
 
 	protected login(email: string, password: string) {
 		if (this.isLoggingIn()) {
@@ -33,10 +40,10 @@ export class LoginPage {
 			.login(email, password)
 			.pipe(
 				tap({
-					next: () => {
+					next: async () => {
 						console.log('Login successful');
 						this.isLoggingIn.set(false);
-						this.router.navigate(['/projects']);
+						await this.router.navigate(['/projects']);
 					},
 					error: () => {
 						console.log('Login failed');

@@ -1,12 +1,15 @@
+import { randomUUID } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { APP_BASE_HREF } from '@angular/common';
 import {
 	AngularNodeAppEngine,
 	createNodeRequestHandler,
 	isMainModule,
 	writeResponseToNodeResponse,
 } from '@angular/ssr/node';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
@@ -27,6 +30,8 @@ const angularApp = new AngularNodeAppEngine();
  * ```
  */
 
+app.use(cookieParser());
+
 /**
  * Serve static files from /browser
  */
@@ -42,8 +47,21 @@ app.use(
  * Handle all other requests by rendering the Angular application.
  */
 app.use('/**', (req, res, next) => {
+	console.log('req?.cookies:', req?.cookies);
+	res.cookie('server-cookie', randomUUID());
+
+	if (req?.cookies.token) {
+		res.cookie('token', req?.cookies.token);
+	}
+
 	angularApp
-		.handle(req)
+		.handle(req, {
+			providers: [
+				{ provide: APP_BASE_HREF, useValue: req.baseUrl },
+				{ provide: 'REQUEST', useValue: req },
+				{ provide: 'RESPONSE', useValue: res },
+			],
+		})
 		.then(response => (response ? writeResponseToNodeResponse(response, res) : next()))
 		.catch(next);
 });

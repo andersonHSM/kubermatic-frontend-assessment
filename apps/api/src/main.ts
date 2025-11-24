@@ -7,6 +7,8 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 import { AppModule } from './app/app.module';
 import { JwtGuard } from './domains/guards/jwt.guard';
 
@@ -14,6 +16,14 @@ async function bootstrap() {
 	const globalPrefix = 'api';
 	const app = await NestFactory.create(AppModule, { snapshot: true });
 	app.setGlobalPrefix(globalPrefix);
+	app.use(cookieParser());
+	app.use(
+		session({
+			secret: 'my-secret',
+			resave: false,
+			saveUninitialized: false,
+		}),
+	);
 
 	const rawCorsOrigins = process.env.CORS_ORIGINS?.trim();
 	let corsOrigin: boolean | string | RegExp | (string | RegExp)[] = false;
