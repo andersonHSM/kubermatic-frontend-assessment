@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -19,8 +19,16 @@ import { ClustersService } from '../../../../../services/clusters/clusters.servi
 export class ListClustersPage {
 	protected route = inject(ActivatedRoute);
 	protected visible = signal(false);
+	protected selectedCluster = signal<Cluster | null>(null);
 
 	private readonly clustersService = inject(ClustersService);
+
+	private listenToVisibleEffect = effect(() => {
+		console.log('Visible changed: ' + this.visible());
+		if (!this.visible()) {
+			this.selectedCluster.set(null);
+		}
+	});
 
 	protected clusters$ = this.route.params.pipe(
 		filter(params => params['id']),
@@ -30,6 +38,7 @@ export class ListClustersPage {
 	);
 
 	protected editCluster(cluster: Cluster) {
+		this.selectedCluster.set(cluster);
 		this.visible.set(true);
 	}
 }
