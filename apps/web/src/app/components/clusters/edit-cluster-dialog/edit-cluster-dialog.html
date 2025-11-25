@@ -1,3 +1,13 @@
-<p-dialog header="Edit Profile" [modal]="true" [(visible)]="visible" [style]="{ width: '25rem' }">
-
+<p-dialog
+        [modal]="true"
+        [(visible)]="visible"
+        styleClass="w-2xl"
+        (onHide)="onHide()"
+>
+    <ng-template #header>
+        <div class="flex flex-col">
+            <h3 class="text-3xl">Edit cluster</h3>
+            <p class="text-xl">Cluster name: {{ cluster()?.name }}</p>
+        </div>
+    </ng-template>
 </p-dialog>

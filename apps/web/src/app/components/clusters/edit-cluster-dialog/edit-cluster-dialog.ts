@@ -14,10 +14,6 @@ export class EditClusterDialog {
 	public visible = model(false);
 	public cluster = model<Cluster | null>(null);
 
-	private listenToClusterEffect = effect(() => {
-		console.log(`Cluster in EditClusterDialog: ${this.cluster()}`);
-	});
-
 	private formBuilder = inject(FormBuilder);
 
 	protected clusterForm = this.formBuilder.group({
@@ -29,4 +25,8 @@ export class EditClusterDialog {
 			validators: [Validators.required, Validators.min(1)],
 		}),
 	});
+
+	protected onHide() {
+		console.log('closing dialog');
+	}
 }

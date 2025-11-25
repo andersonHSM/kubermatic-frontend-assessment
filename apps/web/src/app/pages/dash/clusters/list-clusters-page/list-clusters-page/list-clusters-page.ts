@@ -24,7 +24,6 @@ export class ListClustersPage {
 	private readonly clustersService = inject(ClustersService);
 
 	private listenToVisibleEffect = effect(() => {
-		console.log('Visible changed: ' + this.visible());
 		if (!this.visible()) {
 			this.selectedCluster.set(null);
 		}
