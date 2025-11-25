@@ -1,13 +1,70 @@
 <p-dialog
+        header="Edit cluster"
         [modal]="true"
         [(visible)]="visible"
         styleClass="w-2xl"
         (onHide)="onHide()"
 >
     <ng-template #header>
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-2">
             <h3 class="text-3xl">Edit cluster</h3>
-            <p class="text-xl">Cluster name: {{ cluster()?.name }}</p>
         </div>
     </ng-template>
+
+    <form [formGroup]="clusterForm">
+        <div class="flex flex-col gap-2">
+            <div class="grid grid-cols-2 min-h-10 gap-3 py-2 w-full">
+                <p-float-label
+                        variant="on"
+                        class="w-full"
+                >
+                    <label for="cluster-name">Name</label>
+                    <input
+                            class="w-full"
+                            id="cluster-name"
+                            autocomplete="off"
+                            pInputText
+                            formControlName="name"
+                    />
+                </p-float-label>
+                <p-float-label
+                        variant="on"
+                        class="w-full"
+                >
+                    <label for="cluster-version">Version</label>
+                    <input
+                            class="w-full"
+                            id="cluster-version"
+                            autocomplete="off"
+                            pInputText
+                            formControlName="version"
+                    />
+                </p-float-label>
+            </div>
+            <div class="flex flex-col gap-4">
+                <label class="text-sm -mb-3">Node Count</label>
+                <p-input-group class="gap-0.5 w-fit!">
+                    <p-button
+                            icon="pi pi-minus"
+                            (click)="decreaseNodeCount()"
+                    />
+                    <input
+                            type="text"
+                            pInputText
+                            formControlName="nodeCount"
+                            class="w-fit mb-4 c"
+                    />
+                    <p-button
+                            icon="pi pi-plus"
+                            (click)="increaseNodeCount()"
+                    />
+                </p-input-group>
+                <p-slider
+                        formControlName="nodeCount"
+                        class="w-full"
+                />
+
+            </div>
+        </div>
+    </form>
 </p-dialog>
