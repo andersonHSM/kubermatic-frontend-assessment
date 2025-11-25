@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, model } from '@angular/core';
+import { Dialog } from 'primeng/dialog';
 
 @Component({
 	selector: 'app-edit-cluster-dialog',
-	imports: [],
+	imports: [Dialog],
 	templateUrl: './edit-cluster-dialog.html',
 	styleUrl: './edit-cluster-dialog.css',
 })
-export class EditClusterDialog {}
+export class EditClusterDialog {
+	public visible = model(false);
+}

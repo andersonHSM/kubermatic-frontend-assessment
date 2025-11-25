@@ -19,7 +19,7 @@
                     <td>{{ cluster.nodeCount }}</td>
                     <td class="w-30">
                         <div class="flex justify-end gap-6">
-                            <p-button severity="primary" icon="pi pi-user-edit"/>
+                            <p-button (click)="editCluster(cluster)" severity="primary" icon="pi pi-user-edit"/>
                             <p-button severity="danger" icon="pi pi-times-circle"/>
                         </div>
                     </td>
@@ -27,4 +27,5 @@
             </ng-template>
         </ng-template>
     </p-table>
+    <app-edit-cluster-dialog [(visible)]="visible"/>
 </div>
