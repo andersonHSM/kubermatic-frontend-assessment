@@ -25,3 +25,5 @@ AGENTS.md
 .angular
 
 /libs/db/output/generated
+/apps/web/src/*.css*
+/apps/web/src/app/*.css*
