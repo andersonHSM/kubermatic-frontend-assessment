@@ -1,18 +1,45 @@
 <div class="flex flex-col gap-4">
     <h1 class="text-3xl">List Clusters</h1>
-    <div class="grid grid-cols-2 gap-4">
-        @for (cluster of clusters$ | async; track cluster.id) {
-            <p-card
-                    pRipple
-                    class="cursor-pointer"
-            >
-                <ng-template #title>{{ cluster.name }}</ng-template>
-                <ng-template #subtitle>
-                    <p class="mb-0.5">v{{ cluster.version.version }}</p>
-                    <p>{{ cluster.region.name }}</p>
-                </ng-template>
-            </p-card>
+    <p-table [value]="(clusters$ | async) ?? []">
+        <ng-template #header>
+            <tr>
+                <th>Status</th>
+                <th>Name</th>
+                <th>Region</th>
+                <th>Version</th>
+                <th>Node Count</th>
+                <th class="w-30"></th>
+            </tr>
+            <ng-template #body let-cluster>
+                <tr>
+                    <td>{{ cluster.status }}</td>
+                    <td>{{ cluster.name }}</td>
+                    <td>{{ cluster.region.name }}</td>
+                    <td>{{ cluster.version.version }}</td>
+                    <td>{{ cluster.nodeCount }}</td>
+                    <td class="w-30">
+                        <div class="flex justify-end gap-6">
+                            <p-button severity="primary" icon="pi pi-user-edit"/>
+                            <p-button severity="danger" icon="pi pi-times-circle"/>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </ng-template>
+    </p-table>
+    <!--    <div class="grid grid-cols-2 gap-4">-->
+    <!--        @for (cluster of clusters$ | async; track cluster.id) {-->
+    <!--            <p-card-->
+    <!--                    pRipple-->
+    <!--                    class="cursor-pointer"-->
+    <!--            >-->
+    <!--                <ng-template #title>{{ cluster.name }}</ng-template>-->
+    <!--                <ng-template #subtitle>-->
+    <!--                    <p class="mb-0.5">v{{ cluster.version.version }}</p>-->
+    <!--                    <p>{{ cluster.region.name }}</p>-->
+    <!--                </ng-template>-->
+    <!--            </p-card>-->
 
-        }
-    </div>
+    <!--        }-->
+    <!--    </div>-->
 </div>
