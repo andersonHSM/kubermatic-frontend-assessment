@@ -6,6 +6,7 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
+import { AutoComplete } from 'primeng/autocomplete';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -36,6 +37,7 @@ import { Cluster } from '../../../models/cluster.model';
 		StepPanel,
 		Tag,
 		Select,
+		AutoComplete,
 	],
 	templateUrl: './edit-cluster-dialog.html',
 	styleUrl: './edit-cluster-dialog.css',

@@ -48,7 +48,7 @@
                                 >
                                     <label for="cluster-version">Version</label>
                                     <!-- todo: implement version listing-->
-                                    <p-select formControlName="version"></p-select>
+                                    <p-auto-complete formControlName="version"></p-auto-complete>
                                     <!--                                    <input-->
                                     <!--                                            id="cluster-version"-->
                                     <!--                                            autocomplete="off"-->
@@ -110,8 +110,14 @@
                         <div class="flex flex-col gap-4">
                             <p class="text-sm">Labels</p>
                             <div class="grid grid-rows-2 gap-2">
-                                <div class="grid grid-cols-2 gap-2" formGroupName="labelInput">
-                                    <p-float-label class="w-full" variant="on">
+                                <div
+                                        class="grid grid-cols-2 gap-2"
+                                        formGroupName="labelInput"
+                                >
+                                    <p-float-label
+                                            class="w-full"
+                                            variant="on"
+                                    >
                                         <label for="cluster-labels">Key</label>
                                         <input
 											#key
@@ -121,7 +127,10 @@
                                             formControlName="key"
                                         />
                                     </p-float-label>
-                                    <p-float-label class="w-full" variant="on">
+                                    <p-float-label
+                                            class="w-full"
+                                            variant="on"
+                                    >
                                         <label for="cluster-labels">Value</label>
                                         <input
 											#value
@@ -140,11 +149,18 @@
                                         iconPos="right"
                                 />
                             </div>
-                            <div class="flex gap-4" formArrayName="labels">
-                                @for (label of labels.controls; track `${label.value['key']}:${label.value['value']}`) {
-                                    @if (label && label.value['key'] && label.value['value']) {
-                                        <p-tag severity="secondary"
-                                               value="{{ label.value['key'] ?? '' }}:{{ label.value['value'] ?? '' }}"/>
+                            <div
+                                    class="flex gap-4"
+                                    formArrayName="labels"
+                            >
+                                @for (label of labels.controls; track
+									`${label.value['key']}:${label.value['value']}`) {
+                                    @if (label && label.value['key']
+									&& label.value['value']) {
+                                        <p-tag
+                                                severity="secondary"
+                                                value="{{ label.value['key'] ?? '' }}:{{ label.value['value'] ?? '' }}"
+                                        />
                                     }
                                 }
                             </div>
