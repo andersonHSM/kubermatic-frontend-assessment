@@ -1,5 +1,8 @@
 <div class="flex flex-col gap-4">
-    <h1 class="text-3xl">List Clusters</h1>
+    <div class="flex w-full justify-between">
+        <h1 class="text-3xl">List Clusters</h1>
+        <p-button label="Add Cluster" icon="pi pi-plus" (onClick)="createCluster()"/>
+    </div>
     <p-table [value]="(clusters$ | async) ?? []">
         <ng-template #header>
             <tr>
@@ -27,5 +30,5 @@
             </ng-template>
         </ng-template>
     </p-table>
-    <app-cluster-wizard [(visible)]="visible" [(cluster)]="selectedCluster"/>
+    <app-cluster-wizard [(visible)]="visible" [(cluster)]="selectedCluster" [action]="action"/>
 </div>
