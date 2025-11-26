@@ -127,6 +127,7 @@ export class EditClusterDialog {
 
 	protected addLabel(key: string, value: string) {
 		this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {});
+		this.clusterForm.controls.labelInput.reset({ key: '', value: '' });
 	}
 
 	protected searchVersion($event: AutoCompleteCompleteEvent) {
