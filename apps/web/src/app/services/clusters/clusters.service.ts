@@ -20,4 +20,8 @@ export class ClustersService {
 	public updateCluster(updatedClusterData: Partial<Cluster>) {
 		console.log(updatedClusterData);
 	}
+
+	public createCluster(updatedClusterData: Partial<Cluster>) {
+		console.log(updatedClusterData);
+	}
 }

@@ -172,6 +172,7 @@ export class ClusterWizard {
 		const { region, version, name, nodeCount } = this.clusterForm.value;
 
 		let updatedClusterData: Partial<Cluster> = {
+			id: this.cluster()?.id,
 			versionId: this.versions().find(_version => _version.version === version)?.id,
 			regionId: this.regions().find(_region => _region.code === region)?.id,
 		};
@@ -180,7 +181,10 @@ export class ClusterWizard {
 		if (nodeCount) updatedClusterData = { ...updatedClusterData, nodeCount };
 		if (Object.keys(labels).length > 0) updatedClusterData = { ...updatedClusterData, labels };
 
-		this.clustersService.updateCluster(updatedClusterData);
+		if (this.action() === 'create') {
+			return this.clustersService.createCluster(updatedClusterData);
+		}
+		return this.clustersService.updateCluster(updatedClusterData);
 	}
 
 	protected searchRegion($event: AutoCompleteCompleteEvent) {
