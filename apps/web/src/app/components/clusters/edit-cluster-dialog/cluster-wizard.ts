@@ -8,6 +8,7 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import {
 	AutoComplete,
 	AutoCompleteCompleteEvent,
@@ -82,6 +83,7 @@ export class ClusterWizard {
 	private versionService = inject(VersionService);
 	private readonly regionService = inject(RegionService);
 	private readonly clustersService = inject(ClustersService);
+	private readonly activatedRoute = inject(ActivatedRoute);
 
 	constructor() {
 		this.currentStep.set(1);
@@ -182,7 +184,10 @@ export class ClusterWizard {
 		if (Object.keys(labels).length > 0) updatedClusterData = { ...updatedClusterData, labels };
 
 		if (this.action() === 'create') {
-			return this.clustersService.createCluster(updatedClusterData);
+			return this.clustersService.createCluster(
+				this.activatedRoute.snapshot.params['id'],
+				updatedClusterData,
+			);
 		}
 		return this.clustersService.updateCluster(updatedClusterData);
 	}

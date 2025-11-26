@@ -21,7 +21,7 @@ export class ClustersService {
 		console.log(updatedClusterData);
 	}
 
-	public createCluster(updatedClusterData: Partial<Cluster>) {
-		console.log(updatedClusterData);
+	public createCluster(projectId: string, updatedClusterData: Partial<Cluster>) {
+		console.log({ updatedClusterData, projectId });
 	}
 }
