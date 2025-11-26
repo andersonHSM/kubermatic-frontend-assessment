@@ -154,8 +154,8 @@ export class EditClusterDialog {
 	}
 
 	protected searchRegion($event: AutoCompleteCompleteEvent) {
-		this.filteredRegions = this.regions().filter(
-			region => region.code.includes($event.query) || region.name.includes($event.query),
+		this.filteredRegions = this.regions().filter(region =>
+			region.name.toLowerCase().includes($event.query.toLowerCase()),
 		);
 	}
 }

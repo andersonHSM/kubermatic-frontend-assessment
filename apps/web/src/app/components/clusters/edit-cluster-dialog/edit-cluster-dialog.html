@@ -28,10 +28,10 @@
                 >
                     <form [formGroup]="clusterForm">
                         <div class="flex flex-col gap-2 px-5">
-                            <div class="grid grid-cols-2 auto-rows-auto min-h-10 gap-5 py-2">
+                            <div class="grid grid-cols-2 auto-rows-auto min-h-10 gap-8 py-5">
                                 <p-float-label
                                         class="w-full"
-                                        variant="on"
+                                        variant="over"
                                 >
                                     <label for="cluster-name">Name</label>
                                     <input
@@ -44,7 +44,7 @@
                                 </p-float-label>
                                 <p-float-label
                                         class="w-full"
-                                        variant="on"
+                                        variant="over"
                                 >
                                     <label for="cluster-version">Version</label>
                                     <!-- todo: implement version listing-->
@@ -61,13 +61,13 @@
                                 </p-float-label>
                                 <p-float-label
                                         class="w-full"
-                                        variant="on"
+                                        variant="over"
                                 >
-                                    <label for="cluster-version">Version</label>
+                                    <label for="cluster-region mb-10">Region</label>
                                     <!-- todo: implement version listing-->
                                     <p-auto-complete
-                                            optionLabel="version"
-                                            optionValue="version"
+                                            optionLabel="code"
+                                            optionValue="code"
                                             dropdown
                                             inputId="cluster-region"
                                             [ngModelOptions]="{standalone: true}"
@@ -135,7 +135,7 @@
                                 >
                                     <p-float-label
                                             class="w-full"
-                                            variant="on"
+                                            variant="over"
                                     >
                                         <label for="cluster-labels">Key</label>
                                         <input
@@ -148,7 +148,7 @@
                                     </p-float-label>
                                     <p-float-label
                                             class="w-full"
-                                            variant="on"
+                                            variant="over"
                                     >
                                         <label for="cluster-labels">Value</label>
                                         <input
