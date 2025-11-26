@@ -1,4 +1,4 @@
-import { Component, effect, inject, model } from '@angular/core';
+import { Component, effect, inject, model, signal } from '@angular/core';
 import {
 	FormArray,
 	FormBuilder,
@@ -11,6 +11,7 @@ import { Dialog } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
 import { Slider } from 'primeng/slider';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
@@ -34,6 +35,7 @@ import { Cluster } from '../../../models/cluster.model';
 		StepPanels,
 		StepPanel,
 		Tag,
+		Select,
 	],
 	templateUrl: './edit-cluster-dialog.html',
 	styleUrl: './edit-cluster-dialog.css',
@@ -41,7 +43,7 @@ import { Cluster } from '../../../models/cluster.model';
 export class EditClusterDialog {
 	public visible = model(false);
 	public cluster = model<Cluster | null>(null);
-
+	protected readonly currentStep = signal<number>(1);
 	private formBuilder = inject(FormBuilder);
 
 	protected clusterForm = this.formBuilder.group({
@@ -59,29 +61,30 @@ export class EditClusterDialog {
 	});
 
 	constructor() {
+		this.currentStep.set(1);
 		effect(() => {
-			console.log(this.cluster());
+			this.clusterForm.patchValue({
+				nodeCount: this.cluster()?.nodeCount ?? 0,
+				region: this.cluster()?.region.name,
+				version: this.cluster()?.version.version,
+				name: this.cluster()?.name,
+			});
 			Object.entries(this.cluster()?.labels ?? {}).forEach(([key, value]) => {
 				this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {
 					emitEvent: true,
 				});
 			});
-
-			return () => {
-				this.clusterForm.setControl('labels', this.formBuilder.array([]));
-				this.clusterForm.reset();
-			};
 		});
 	}
 
 	get labels() {
-		console.log(this.clusterForm.get('labels')?.value);
 		return this.clusterForm.get('labels') as FormArray;
 	}
 
 	protected onHide() {
+		this.currentStep.set(1);
 		this.clusterForm.setControl('labels', this.formBuilder.array([]));
-		this.clusterForm.reset();
+		this.clusterForm.reset({ nodeCount: 0 });
 	}
 
 	protected decreaseNodeCount() {

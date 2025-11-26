@@ -12,7 +12,7 @@
     </ng-template>
 
     <p-stepper
-            [value]="1"
+            [(value)]="currentStep"
             class="w-full p-2"
     >
         <p-step-list>
@@ -47,13 +47,14 @@
                                         variant="on"
                                 >
                                     <label for="cluster-version">Version</label>
-                                    <input
-                                            id="cluster-version"
-                                            autocomplete="off"
-                                            pInputText
-                                            class="w-full"
-                                            formControlName="version"
-                                    />
+                                    <p-select formControlName="version"></p-select>
+                                    <!--                                    <input-->
+                                    <!--                                            id="cluster-version"-->
+                                    <!--                                            autocomplete="off"-->
+                                    <!--                                            pInputText-->
+                                    <!--                                            class="w-full"-->
+                                    <!--                                            formControlName="version"-->
+                                    <!--                                    />-->
                                 </p-float-label>
                             </div>
 
