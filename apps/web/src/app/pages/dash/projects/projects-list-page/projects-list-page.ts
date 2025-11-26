@@ -38,8 +38,6 @@ export class ProjectsListPage {
 		debounceTime(300),
 		distinctUntilChanged(),
 		switchMap(searchTerm => {
-			console.log(`Searching for projects with name: ${searchTerm}`);
-
 			return this.projectsService.listProjects(searchTerm);
 		}),
 	);

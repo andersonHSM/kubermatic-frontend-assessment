@@ -72,6 +72,8 @@ export class EditClusterDialog {
 	});
 	private versionService = inject(VersionService);
 	private readonly regionService = inject(RegionService);
+	protected searchRegionModel = signal('');
+	protected filteredRegions: Region[];
 
 	constructor() {
 		this.currentStep.set(1);
@@ -149,5 +151,11 @@ export class EditClusterDialog {
 	protected saveCluster() {
 		console.log('oi');
 		console.log(this.clusterForm.value);
+	}
+
+	protected searchRegion($event: AutoCompleteCompleteEvent) {
+		this.filteredRegions = this.regions().filter(
+			region => region.code.includes($event.query) || region.name.includes($event.query),
+		);
 	}
 }

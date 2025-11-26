@@ -28,7 +28,7 @@
                 >
                     <form [formGroup]="clusterForm">
                         <div class="flex flex-col gap-2 px-5">
-                            <div class="grid grid-cols-2 min-h-10 gap-3 py-2">
+                            <div class="grid grid-cols-2 auto-rows-auto min-h-10 gap-5 py-2">
                                 <p-float-label
                                         class="w-full"
                                         variant="on"
@@ -57,6 +57,23 @@
                                             [(ngModel)]="searchVersionModel"
                                             (completeMethod)="searchVersion($event)"
                                             [suggestions]="filteredVersions"
+                                    ></p-auto-complete>
+                                </p-float-label>
+                                <p-float-label
+                                        class="w-full"
+                                        variant="on"
+                                >
+                                    <label for="cluster-version">Version</label>
+                                    <!-- todo: implement version listing-->
+                                    <p-auto-complete
+                                            optionLabel="version"
+                                            optionValue="version"
+                                            dropdown
+                                            inputId="cluster-region"
+                                            [ngModelOptions]="{standalone: true}"
+                                            [(ngModel)]="searchRegionModel"
+                                            (completeMethod)="searchRegion($event)"
+                                            [suggestions]="filteredRegions"
                                     ></p-auto-complete>
                                 </p-float-label>
                             </div>
