@@ -87,22 +87,7 @@ export class ClusterWizard {
 
 	constructor() {
 		this.currentStep.set(1);
-		effect(() => {
-			this.clusterForm.patchValue({
-				nodeCount: this.cluster()?.nodeCount ?? 0,
-				region: this.cluster()?.region.code,
-				version: this.cluster()?.version.version,
-				name: this.cluster()?.name,
-			});
-			this.selectedRegion.set(this.cluster()?.region ?? null);
-			this.searchVersionModel.set(this.cluster()?.version.version ?? '');
-			this.searchRegionModel.set(this.cluster()?.region.code ?? '');
-			Object.entries(this.cluster()?.labels ?? {}).forEach(([key, value]) => {
-				this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {
-					emitEvent: true,
-				});
-			});
-		});
+		this.hydrateClusterData(this.action());
 		this.versionService
 			.findAll()
 			.pipe(takeUntilDestroyed())
@@ -116,6 +101,27 @@ export class ClusterWizard {
 			.subscribe(regions => {
 				this.regions.set(regions);
 			});
+	}
+
+	private hydrateClusterData(action: 'edit' | 'create' = 'edit') {
+		effect(() => {
+			if (!this.visible() && action === 'edit' && this.cluster()) {
+				this.clusterForm.patchValue({
+					nodeCount: this.cluster()?.nodeCount ?? 0,
+					region: this.cluster()?.region.code,
+					version: this.cluster()?.version.version,
+					name: this.cluster()?.name,
+				});
+				this.selectedRegion.set(this.cluster()?.region ?? null);
+				this.searchVersionModel.set(this.cluster()?.version.version ?? '');
+				this.searchRegionModel.set(this.cluster()?.region.code ?? '');
+				Object.entries(this.cluster()?.labels ?? {}).forEach(([key, value]) => {
+					this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {
+						emitEvent: true,
+					});
+				});
+			}
+		});
 	}
 
 	get labels() {
