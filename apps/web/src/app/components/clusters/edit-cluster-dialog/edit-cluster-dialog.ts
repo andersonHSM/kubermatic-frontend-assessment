@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { AutoComplete, AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
 import { Dialog } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputGroup } from 'primeng/inputgroup';
@@ -43,6 +44,7 @@ import { VersionService } from '../../../services/version/version.service';
 		AutoComplete,
 
 		AsyncPipe,
+		Card,
 	],
 	templateUrl: './edit-cluster-dialog.html',
 	styleUrl: './edit-cluster-dialog.css',
@@ -76,7 +78,7 @@ export class EditClusterDialog {
 		effect(() => {
 			this.clusterForm.patchValue({
 				nodeCount: this.cluster()?.nodeCount ?? 0,
-				region: this.cluster()?.region.name,
+				region: this.cluster()?.region.code,
 				version: this.cluster()?.version.version,
 				name: this.cluster()?.name,
 			});
@@ -132,5 +134,10 @@ export class EditClusterDialog {
 
 	protected searchVersion($event: AutoCompleteCompleteEvent) {
 		this.filteredVersions = this.versions.filter(version => version.version.includes($event.query));
+	}
+
+	protected saveCluster() {
+		console.log('oi');
+		console.log(this.clusterForm.value);
 	}
 }
