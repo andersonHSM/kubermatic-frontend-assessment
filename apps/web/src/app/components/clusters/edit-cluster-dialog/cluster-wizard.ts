@@ -53,7 +53,7 @@ import { VersionService } from '../../../services/version/version.service';
 	templateUrl: './cluster-wizard.html',
 	styleUrl: './cluster-wizard.css',
 })
-export class EditClusterDialog {
+export class ClusterWizard {
 	public readonly action = input<'edit' | 'create'>('edit');
 	public visible = model(false);
 	public cluster = model<Cluster | null>(null);

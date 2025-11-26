@@ -1,16 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { EditClusterDialog } from './edit-cluster-dialog';
+
+import { ClusterWizard } from './cluster-wizard';
 
 describe('EditClusterDialog', () => {
-	let component: EditClusterDialog;
-	let fixture: ComponentFixture<EditClusterDialog>;
+	let component: ClusterWizard;
+	let fixture: ComponentFixture<ClusterWizard>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [EditClusterDialog],
+			imports: [ClusterWizard],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(EditClusterDialog);
+		fixture = TestBed.createComponent(ClusterWizard);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
