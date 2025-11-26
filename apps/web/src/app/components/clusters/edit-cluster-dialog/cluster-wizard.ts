@@ -103,27 +103,6 @@ export class ClusterWizard {
 			});
 	}
 
-	private hydrateClusterData(action: 'edit' | 'create' = 'edit') {
-		effect(() => {
-			if (!this.visible() && action === 'edit' && this.cluster()) {
-				this.clusterForm.patchValue({
-					nodeCount: this.cluster()?.nodeCount ?? 0,
-					region: this.cluster()?.region.code,
-					version: this.cluster()?.version.version,
-					name: this.cluster()?.name,
-				});
-				this.selectedRegion.set(this.cluster()?.region ?? null);
-				this.searchVersionModel.set(this.cluster()?.version.version ?? '');
-				this.searchRegionModel.set(this.cluster()?.region.code ?? '');
-				Object.entries(this.cluster()?.labels ?? {}).forEach(([key, value]) => {
-					this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {
-						emitEvent: true,
-					});
-				});
-			}
-		});
-	}
-
 	get labels() {
 		return this.clusterForm.get('labels') as FormArray;
 	}
@@ -134,6 +113,9 @@ export class ClusterWizard {
 			'labels',
 			this.formBuilder.array<{ key: string; value: string }>([]),
 		);
+		this.selectedRegion.set(null);
+		this.searchRegionModel.set('');
+		this.searchVersionModel.set('');
 		this.clusterForm.reset({ nodeCount: 0 });
 	}
 
@@ -214,5 +196,26 @@ export class ClusterWizard {
 
 	protected onVersionChange($event: AutoCompleteSelectEvent) {
 		this.clusterForm.patchValue({ version: $event.value.version }, { emitEvent: true });
+	}
+
+	private hydrateClusterData(action: 'edit' | 'create' = 'edit') {
+		effect(() => {
+			if (this.visible() && action === 'edit' && this.cluster()) {
+				this.clusterForm.patchValue({
+					nodeCount: this.cluster()?.nodeCount ?? 0,
+					region: this.cluster()?.region.code,
+					version: this.cluster()?.version.version,
+					name: this.cluster()?.name,
+				});
+				this.selectedRegion.set(this.cluster()?.region ?? null);
+				this.searchVersionModel.set(this.cluster()?.version.version ?? '');
+				this.searchRegionModel.set(this.cluster()?.region.code ?? '');
+				Object.entries(this.cluster()?.labels ?? {}).forEach(([key, value]) => {
+					this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {
+						emitEvent: true,
+					});
+				});
+			}
+		});
 	}
 }
