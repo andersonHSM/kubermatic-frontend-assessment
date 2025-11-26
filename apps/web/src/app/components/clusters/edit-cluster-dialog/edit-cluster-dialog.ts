@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, effect, inject, model, signal } from '@angular/core';
+import { Component, effect, inject, input, model, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
 	FormArray,
@@ -8,7 +8,11 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
-import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
+import {
+	AutoComplete,
+	AutoCompleteCompleteEvent,
+	AutoCompleteSelectEvent,
+} from 'primeng/autocomplete';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -19,13 +23,15 @@ import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper'
 import { Tag } from 'primeng/tag';
 
 import { Cluster } from '../../../models/cluster.model';
+import { Labels } from '../../../models/labels.mdel';
 import { Region } from '../../../models/region.model';
 import { Version } from '../../../models/version.model';
+import { ClustersService } from '../../../services/clusters/clusters.service';
 import { RegionService } from '../../../services/region/region.service';
 import { VersionService } from '../../../services/version/version.service';
 
 @Component({
-	selector: 'app-edit-cluster-dialog',
+	selector: 'app-cluster-wizard',
 	imports: [
 		Dialog,
 		ReactiveFormsModule,
@@ -44,10 +50,11 @@ import { VersionService } from '../../../services/version/version.service';
 		AutoComplete,
 		AsyncPipe,
 	],
-	templateUrl: './edit-cluster-dialog.html',
-	styleUrl: './edit-cluster-dialog.css',
+	templateUrl: './cluster-wizard.html',
+	styleUrl: './cluster-wizard.css',
 })
 export class EditClusterDialog {
+	public readonly action = input<'edit' | 'create'>('edit');
 	public visible = model(false);
 	public cluster = model<Cluster | null>(null);
 	protected searchVersionModel = signal('');
@@ -56,12 +63,14 @@ export class EditClusterDialog {
 	protected versions = signal<Version[]>([]);
 	protected filteredVersions: Version[];
 	protected selectedRegion = signal<Region | null>(null);
+	protected searchRegionModel = signal('');
+	protected filteredRegions: Region[];
 	private formBuilder = inject(FormBuilder);
 	protected clusterForm = this.formBuilder.group({
 		name: this.formBuilder.control('', { validators: [Validators.required] }),
 		version: this.formBuilder.control('', { validators: [Validators.required] }),
 		region: this.formBuilder.control('', { validators: [Validators.required] }),
-		labels: this.formBuilder.array([]),
+		labels: this.formBuilder.array<{ key: string; value: string }>([]),
 		labelInput: this.formBuilder.group({
 			key: this.formBuilder.control('', { validators: [Validators.required] }),
 			value: this.formBuilder.control('', { validators: [Validators.required] }),
@@ -72,8 +81,7 @@ export class EditClusterDialog {
 	});
 	private versionService = inject(VersionService);
 	private readonly regionService = inject(RegionService);
-	protected searchRegionModel = signal('');
-	protected filteredRegions: Region[];
+	private readonly clustersService = inject(ClustersService);
 
 	constructor() {
 		this.currentStep.set(1);
@@ -86,6 +94,7 @@ export class EditClusterDialog {
 			});
 			this.selectedRegion.set(this.cluster()?.region ?? null);
 			this.searchVersionModel.set(this.cluster()?.version.version ?? '');
+			this.searchRegionModel.set(this.cluster()?.region.code ?? '');
 			Object.entries(this.cluster()?.labels ?? {}).forEach(([key, value]) => {
 				this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {
 					emitEvent: true,
@@ -113,7 +122,10 @@ export class EditClusterDialog {
 
 	protected onHide() {
 		this.currentStep.set(1);
-		this.clusterForm.setControl('labels', this.formBuilder.array([]));
+		this.clusterForm.setControl(
+			'labels',
+			this.formBuilder.array<{ key: string; value: string }>([]),
+		);
 		this.clusterForm.reset({ nodeCount: 0 });
 	}
 
@@ -149,13 +161,43 @@ export class EditClusterDialog {
 	}
 
 	protected saveCluster() {
-		console.log('oi');
-		console.log(this.clusterForm.value);
+		const labels: Labels =
+			this.clusterForm.value.labels?.reduce((prev, current) => {
+				if (!current) return { ...prev };
+				return { ...prev, [current['key']]: current['value'] } as Labels;
+			}, {} as Labels) ??
+			this.cluster()?.labels ??
+			{};
+
+		const { region, version, name, nodeCount } = this.clusterForm.value;
+
+		let updatedClusterData: Partial<Cluster> = {
+			versionId: this.versions().find(_version => _version.version === version)?.id,
+			regionId: this.regions().find(_region => _region.code === region)?.id,
+		};
+
+		if (name) updatedClusterData = { ...updatedClusterData, name };
+		if (nodeCount) updatedClusterData = { ...updatedClusterData, nodeCount };
+		if (Object.keys(labels).length > 0) updatedClusterData = { ...updatedClusterData, labels };
+
+		this.clustersService.updateCluster(updatedClusterData);
 	}
 
 	protected searchRegion($event: AutoCompleteCompleteEvent) {
 		this.filteredRegions = this.regions().filter(region =>
-			region.name.toLowerCase().includes($event.query.toLowerCase()),
+			region.code.toLowerCase().includes($event.query.toLowerCase()),
 		);
+	}
+
+	protected onRegionChange($event: AutoCompleteSelectEvent) {
+		this.clusterForm.patchValue({ region: $event.value.code }, { emitEvent: true });
+
+		this.selectedRegion.set(
+			this.regions().find(region => region.code === $event.value.code) ?? null,
+		);
+	}
+
+	protected onVersionChange($event: AutoCompleteSelectEvent) {
+		this.clusterForm.patchValue({ version: $event.value.version }, { emitEvent: true });
 	}
 }

@@ -1,4 +1,3 @@
 export interface Labels {
-	team: string;
-	environment: string;
+	[key: string]: string;
 }

@@ -49,12 +49,14 @@
                                     <label for="cluster-version">Version</label>
                                     <!-- todo: implement version listing-->
                                     <p-auto-complete
+                                            appendTo="body"
                                             optionLabel="version"
                                             optionValue="version"
                                             dropdown
                                             inputId="cluster-version"
                                             [ngModelOptions]="{standalone: true}"
                                             [(ngModel)]="searchVersionModel"
+                                            (onSelect)="onVersionChange($event)"
                                             (completeMethod)="searchVersion($event)"
                                             [suggestions]="filteredVersions"
                                     ></p-auto-complete>
@@ -66,12 +68,14 @@
                                     <label for="cluster-region mb-10">Region</label>
                                     <!-- todo: implement version listing-->
                                     <p-auto-complete
+                                            appendTo="body"
                                             optionLabel="code"
                                             optionValue="code"
                                             dropdown
                                             inputId="cluster-region"
                                             [ngModelOptions]="{standalone: true}"
                                             [(ngModel)]="searchRegionModel"
+                                            (onSelect)="onRegionChange($event)"
                                             (completeMethod)="searchRegion($event)"
                                             [suggestions]="filteredRegions"
                                     ></p-auto-complete>
