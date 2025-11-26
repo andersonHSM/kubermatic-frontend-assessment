@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class RegionService {
+	constructor(private readonly prisma: PrismaService) {}
 	findAll() {
-		return `This action returns all region`;
+		return this.prisma.region.findMany();
 	}
 }
