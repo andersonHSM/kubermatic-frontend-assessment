@@ -8,9 +8,8 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
-import { AutoComplete, AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
+import { AutoComplete, AutoCompleteCompleteEvent } from 'primeng/autocomplete';
 import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
 import { Dialog } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputGroup } from 'primeng/inputgroup';
@@ -18,10 +17,11 @@ import { InputText } from 'primeng/inputtext';
 import { Slider } from 'primeng/slider';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
-import { filter } from 'rxjs';
 
 import { Cluster } from '../../../models/cluster.model';
+import { Region } from '../../../models/region.model';
 import { Version } from '../../../models/version.model';
+import { RegionService } from '../../../services/region/region.service';
 import { VersionService } from '../../../services/version/version.service';
 
 @Component({
@@ -42,9 +42,7 @@ import { VersionService } from '../../../services/version/version.service';
 		StepPanel,
 		Tag,
 		AutoComplete,
-
 		AsyncPipe,
-		Card,
 	],
 	templateUrl: './edit-cluster-dialog.html',
 	styleUrl: './edit-cluster-dialog.css',
@@ -54,8 +52,10 @@ export class EditClusterDialog {
 	public cluster = model<Cluster | null>(null);
 	protected searchVersionModel = signal('');
 	protected readonly currentStep = signal<number>(1);
-	protected versions: Version[];
+	protected regions = signal<Region[]>([]);
+	protected versions = signal<Version[]>([]);
 	protected filteredVersions: Version[];
+	protected selectedRegion = signal<Region | null>(null);
 	private formBuilder = inject(FormBuilder);
 	protected clusterForm = this.formBuilder.group({
 		name: this.formBuilder.control('', { validators: [Validators.required] }),
@@ -71,7 +71,7 @@ export class EditClusterDialog {
 		}),
 	});
 	private versionService = inject(VersionService);
-	protected versions$ = this.versionService.findAll();
+	private readonly regionService = inject(RegionService);
 
 	constructor() {
 		this.currentStep.set(1);
@@ -82,6 +82,7 @@ export class EditClusterDialog {
 				version: this.cluster()?.version.version,
 				name: this.cluster()?.name,
 			});
+			this.selectedRegion.set(this.cluster()?.region ?? null);
 			this.searchVersionModel.set(this.cluster()?.version.version ?? '');
 			Object.entries(this.cluster()?.labels ?? {}).forEach(([key, value]) => {
 				this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {
@@ -93,7 +94,14 @@ export class EditClusterDialog {
 			.findAll()
 			.pipe(takeUntilDestroyed())
 			.subscribe(versions => {
-				this.versions = versions;
+				this.versions.set(versions);
+			});
+
+		this.regionService
+			.findAll()
+			.pipe(takeUntilDestroyed())
+			.subscribe(regions => {
+				this.regions.set(regions);
 			});
 	}
 
@@ -133,7 +141,9 @@ export class EditClusterDialog {
 	}
 
 	protected searchVersion($event: AutoCompleteCompleteEvent) {
-		this.filteredVersions = this.versions.filter(version => version.version.includes($event.query));
+		this.filteredVersions = this.versions().filter(version =>
+			version.version.includes($event.query),
+		);
 	}
 
 	protected saveCluster() {
