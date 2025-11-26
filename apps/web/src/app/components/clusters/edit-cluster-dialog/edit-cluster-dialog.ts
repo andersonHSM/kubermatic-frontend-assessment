@@ -1,4 +1,6 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, effect, inject, model, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
 	FormArray,
 	FormBuilder,
@@ -6,18 +8,20 @@ import {
 	ReactiveFormsModule,
 	Validators,
 } from '@angular/forms';
-import { AutoComplete } from 'primeng/autocomplete';
+import { AutoComplete, AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
 import { Slider } from 'primeng/slider';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
+import { filter } from 'rxjs';
 
 import { Cluster } from '../../../models/cluster.model';
+import { Version } from '../../../models/version.model';
+import { VersionService } from '../../../services/version/version.service';
 
 @Component({
 	selector: 'app-edit-cluster-dialog',
@@ -36,8 +40,9 @@ import { Cluster } from '../../../models/cluster.model';
 		StepPanels,
 		StepPanel,
 		Tag,
-		Select,
 		AutoComplete,
+
+		AsyncPipe,
 	],
 	templateUrl: './edit-cluster-dialog.html',
 	styleUrl: './edit-cluster-dialog.css',
@@ -45,9 +50,11 @@ import { Cluster } from '../../../models/cluster.model';
 export class EditClusterDialog {
 	public visible = model(false);
 	public cluster = model<Cluster | null>(null);
+	protected searchVersionModel = signal('');
 	protected readonly currentStep = signal<number>(1);
+	protected versions: Version[];
+	protected filteredVersions: Version[];
 	private formBuilder = inject(FormBuilder);
-
 	protected clusterForm = this.formBuilder.group({
 		name: this.formBuilder.control('', { validators: [Validators.required] }),
 		version: this.formBuilder.control('', { validators: [Validators.required] }),
@@ -61,6 +68,8 @@ export class EditClusterDialog {
 			validators: [Validators.required, Validators.min(1)],
 		}),
 	});
+	private versionService = inject(VersionService);
+	protected versions$ = this.versionService.findAll();
 
 	constructor() {
 		this.currentStep.set(1);
@@ -71,12 +80,19 @@ export class EditClusterDialog {
 				version: this.cluster()?.version.version,
 				name: this.cluster()?.name,
 			});
+			this.searchVersionModel.set(this.cluster()?.version.version ?? '');
 			Object.entries(this.cluster()?.labels ?? {}).forEach(([key, value]) => {
 				this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {
 					emitEvent: true,
 				});
 			});
 		});
+		this.versionService
+			.findAll()
+			.pipe(takeUntilDestroyed())
+			.subscribe(versions => {
+				this.versions = versions;
+			});
 	}
 
 	get labels() {
@@ -111,5 +127,9 @@ export class EditClusterDialog {
 
 	protected addLabel(key: string, value: string) {
 		this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {});
+	}
+
+	protected searchVersion($event: AutoCompleteCompleteEvent) {
+		this.filteredVersions = this.versions.filter(version => version.version.includes($event.query));
 	}
 }

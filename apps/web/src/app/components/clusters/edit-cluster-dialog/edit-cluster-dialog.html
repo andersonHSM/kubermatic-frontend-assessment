@@ -2,7 +2,7 @@
         header="Edit cluster"
         [modal]="true"
         [(visible)]="visible"
-        styleClass="w-2xl"
+        styleClass="w-2xl min-h-25"
         (onHide)="onHide()"
 >
     <ng-template #header>
@@ -21,7 +21,7 @@
             <p-step [value]="3">Confirmation</p-step>
         </p-step-list>
         <p-step-panels>
-            <p-step-panel [value]="1">
+            <p-step-panel [value]="1" class="h-40">
                 <ng-template
 					#content
 					let-activateCallback="activateCallback"
@@ -48,14 +48,16 @@
                                 >
                                     <label for="cluster-version">Version</label>
                                     <!-- todo: implement version listing-->
-                                    <p-auto-complete formControlName="version"></p-auto-complete>
-                                    <!--                                    <input-->
-                                    <!--                                            id="cluster-version"-->
-                                    <!--                                            autocomplete="off"-->
-                                    <!--                                            pInputText-->
-                                    <!--                                            class="w-full"-->
-                                    <!--                                            formControlName="version"-->
-                                    <!--                                    />-->
+                                    <p-auto-complete
+                                            optionLabel="version"
+                                            optionValue="version"
+                                            dropdown
+                                            inputId="cluster-version"
+                                            [ngModelOptions]="{standalone: true}"
+                                            [(ngModel)]="searchVersionModel"
+                                            (completeMethod)="searchVersion($event)"
+                                            [suggestions]="filteredVersions"
+                                    ></p-auto-complete>
                                 </p-float-label>
                             </div>
 

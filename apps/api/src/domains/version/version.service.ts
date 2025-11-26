@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
+import { PrismaService } from '../../prisma/prisma.service';
+
 @Injectable()
 export class VersionService {
+	constructor(private readonly prisma: PrismaService) {}
 	findAll() {
-		return `This action returns all version`;
+		return this.prisma.version.findMany();
 	}
 }
