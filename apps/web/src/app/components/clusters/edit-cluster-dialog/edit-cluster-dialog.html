@@ -11,59 +11,87 @@
         </div>
     </ng-template>
 
-    <form [formGroup]="clusterForm">
-        <div class="flex flex-col gap-2">
-            <div class="grid grid-cols-2 min-h-10 gap-3 py-2 w-full">
-                <p-float-label
-                        variant="on"
-                        class="w-full"
-                >
-                    <label for="cluster-name">Name</label>
-                    <input
-                            class="w-full"
-                            id="cluster-name"
-                            autocomplete="off"
-                            pInputText
-                            formControlName="name"
-                    />
-                </p-float-label>
-                <p-float-label
-                        variant="on"
-                        class="w-full"
-                >
-                    <label for="cluster-version">Version</label>
-                    <input
-                            class="w-full"
-                            id="cluster-version"
-                            autocomplete="off"
-                            pInputText
-                            formControlName="version"
-                    />
-                </p-float-label>
-            </div>
-            <div class="flex flex-col gap-4">
-                <label class="text-sm -mb-3">Node Count</label>
-                <p-input-group class="gap-0.5 w-fit!">
-                    <p-button
-                            icon="pi pi-minus"
-                            (click)="decreaseNodeCount()"
-                    />
-                    <input
-                            type="text"
-                            pInputText
-                            formControlName="nodeCount"
-                            class="w-fit mb-4 c"
-                    />
-                    <p-button
-                            icon="pi pi-plus"
-                            (click)="increaseNodeCount()"
-                    />
-                </p-input-group>
-                <p-slider
-                        formControlName="nodeCount"
-                        class="w-full"
-                />
-            </div>
-        </div>
-    </form>
+    <p-stepper [value]="1" class="w-full p-2">
+        <p-step-list>
+            <p-step [value]="1">Basic</p-step>
+            <p-step [value]="2">Details</p-step>
+            <p-step [value]="3">Confirmation</p-step>
+        </p-step-list>
+        <p-step-panels>
+            <p-step-panel [value]="1">
+                <ng-template #content let-activateCallback="activateCallback">
+                    <form [formGroup]="clusterForm">
+                        <div class="flex flex-col gap-2 px-5">
+                            <div class="grid grid-cols-2 min-h-10 gap-3 py-2 w-full">
+                                <p-float-label
+                                        variant="on"
+                                        class="w-full"
+                                >
+                                    <label for="cluster-name">Name</label>
+                                    <input
+                                            class="w-full"
+                                            id="cluster-name"
+                                            autocomplete="off"
+                                            pInputText
+                                            formControlName="name"
+                                    />
+                                </p-float-label>
+                                <p-float-label
+                                        variant="on"
+                                        class="w-full"
+                                >
+                                    <label for="cluster-version">Version</label>
+                                    <input
+                                            class="w-full"
+                                            id="cluster-version"
+                                            autocomplete="off"
+                                            pInputText
+                                            formControlName="version"
+                                    />
+                                </p-float-label>
+                            </div>
+                            <div class="flex flex-col gap-4">
+                                <label class="text-sm -mb-3">Node Count</label>
+                                <p-input-group class="gap-0.5 w-fit!">
+                                    <p-button
+                                            icon="pi pi-minus"
+                                            (click)="decreaseNodeCount()"
+                                    />
+                                    <input
+                                            ngDefaultControl
+                                            type="text"
+                                            pInputText
+                                            formControlName="nodeCount"
+                                            class="w-fit mb-4 c"
+                                    />
+                                    <p-button
+                                            icon="pi pi-plus"
+                                            (click)="increaseNodeCount()"
+                                    />
+                                </p-input-group>
+                                <p-slider
+                                        [ngModel]="clusterForm.controls.nodeCount.value"
+                                        (ngModelChange)="clusterForm.controls.nodeCount.setValue($event)"
+                                        [ngModelOptions]="{standalone: true}"
+                                        class="w-full"
+                                />
+                            </div>
+                            <div class="flex pt-6 justify-end">
+                                <p-button
+                                        label="Next"
+                                        icon="pi pi-arrow-right"
+                                        iconPos="right"
+                                        (onClick)="activateCallback(2)"
+                                />
+                            </div>
+                        </div>
+                    </form>
+                </ng-template>
+            </p-step-panel>
+            <p-step-panel [value]="2">
+                <ng-template #content> Details</ng-template>
+            </p-step-panel>
+        </p-step-panels>
+
+    </p-stepper>
 </p-dialog>

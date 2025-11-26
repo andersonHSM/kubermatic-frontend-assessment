@@ -6,6 +6,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputText } from 'primeng/inputtext';
 import { Slider } from 'primeng/slider';
+import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 
 import { Cluster } from '../../../models/cluster.model';
 
@@ -20,6 +21,11 @@ import { Cluster } from '../../../models/cluster.model';
 		Slider,
 		InputGroup,
 		Button,
+		Stepper,
+		StepList,
+		Step,
+		StepPanels,
+		StepPanel,
 	],
 	templateUrl: './edit-cluster-dialog.html',
 	styleUrl: './edit-cluster-dialog.css',
@@ -36,6 +42,7 @@ export class EditClusterDialog {
 		region: this.formBuilder.control('', { validators: [Validators.required] }),
 		labels: this.formBuilder.array([]),
 		nodeCount: this.formBuilder.control(0, {
+			updateOn: 'change',
 			validators: [Validators.required, Validators.min(1)],
 		}),
 	});
@@ -50,11 +57,17 @@ export class EditClusterDialog {
 			return;
 		}
 
-		this.clusterForm.patchValue({ nodeCount: currentNodeCount - 1 });
+		this.clusterForm.patchValue(
+			{ nodeCount: currentNodeCount - 1 },
+			{ emitEvent: true, onlySelf: false },
+		);
 	}
 
 	protected increaseNodeCount() {
 		const currentNodeCount = this.clusterForm?.value?.nodeCount ?? 0;
-		this.clusterForm.patchValue({ nodeCount: currentNodeCount + 1 });
+		this.clusterForm.patchValue(
+			{ nodeCount: currentNodeCount + 1 },
+			{ emitEvent: true, onlySelf: false },
+		);
 	}
 }
