@@ -74,8 +74,11 @@
 					#content
 					let-activateCallback="activateCallback"
                 >
-                    <form [formGroup]="clusterForm">
-                        <div class="flex flex-col gap-4 p-4">
+                    <form
+                            [formGroup]="clusterForm"
+                            class="flex flex-col gap-4 p-4"
+                    >
+                        <div class="flex flex-col gap-4">
                             <p class="text-sm -mb-3">Node Count</p>
                             <p-input-group class="gap-0.5 w-fit!">
                                 <p-button
@@ -101,6 +104,48 @@
                                     [ngModelOptions]="{standalone: true}"
                                     class="w-full"
                             />
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <p class="text-sm">Labels</p>
+                            <div class="grid grid-rows-2 gap-2">
+                                <div class="grid grid-cols-2 gap-2" formGroupName="labelInput">
+                                    <p-float-label class="w-full" variant="on">
+                                        <label for="cluster-labels">Key</label>
+                                        <input
+											#key
+                                            class="w-full"
+                                            pInputText
+                                            id="cluster-labels"
+                                            formControlName="key"
+                                        />
+                                    </p-float-label>
+                                    <p-float-label class="w-full" variant="on">
+                                        <label for="cluster-labels">Value</label>
+                                        <input
+											#value
+                                            class="w-full"
+                                            pInputText
+                                            id="cluster-labels"
+                                            formControlName="value"
+                                        />
+                                    </p-float-label>
+                                </div>
+                                <p-button
+                                        (click)="addLabel(key.value, value.value)"
+                                        class="ml-auto"
+                                        label="Add label"
+                                        icon="pi pi-plus"
+                                        iconPos="right"
+                                />
+                            </div>
+                            <div class="flex gap-4" formArrayName="labels">
+                                @for (label of labels.controls; track `${label.value['key']}:${label.value['value']}`) {
+                                    @if (label && label.value['key'] && label.value['value']) {
+                                        <p-tag severity="secondary"
+                                               value="{{ label.value['key'] ?? '' }}:{{ label.value['value'] ?? '' }}"/>
+                                    }
+                                }
+                            </div>
                         </div>
                         <div class="flex pt-6 justify-between">
                             <p-button
