@@ -1,180 +1,97 @@
-Kubermatic Assessment — Nx Monorepo (API + Web) with Docker Compose
+# Kubermatic Assessment
 
-This repository contains an Nx workspace with:
-- API: NestJS application (served at `/api`)
-- Web: Angular SPA served by Nginx
-- Database: Postgres (latest)
- - DB Project: Prisma-based migrations and seeds under `apps/db`
+This project is a full-stack application built with Angular and NestJS, using a PostgreSQL database. It's designed to be run with Docker, but can also be run locally.
 
-Docker Compose is provided to build and run the entire stack locally. All configurable and sensitive settings have been moved to a `.env` file at the project root.
+## Project Structure
 
-Prerequisites
-- Docker Desktop or Docker Engine 20+
-- Docker Compose v2 (comes with recent Docker Desktop)
+The project is a monorepo managed by Nx. The main applications are:
 
-Quick start
-1) Create your environment file from the example:
-```
-cp .env.example .env
-```
-Adjust values if needed (ports, DB credentials, etc.). Defaults are fine for local use.
+-   `apps/api`: The NestJS backend application.
+-   `apps/web`: The Angular frontend application, configured for Server-Side Rendering (SSR).
+-   `libs/db`: A shared library for database-related code, using Prisma as the ORM.
 
-2) Build images (first time or after changes):
-```
-docker compose build
-```
+## Features
 
-3) Start the stack:
-```
-docker compose up -d
-```
+-   **Authentication:** Users can log in to the application and receive a token. The API validates this token to protect its endpoints.
+-   **Project Management:** Users can list and search for projects.
+-   **Cluster Management:** Users can create, list, update, and delete clusters within a project, with options for sorting and filtering.
 
-4) Access services:
-- Web (Angular via Nginx): http://localhost:8080
-- API (NestJS): http://localhost:3000/api
-  - Swagger docs: http://localhost:3000/api/docs
-- Postgres: localhost:5432
+## Technologies Used
 
-5) View logs:
-```
-docker compose logs -f
-```
+-   **Frontend:** Angular 20, with PrimeNG for UI components.
+-   **Backend:** NestJS 11, with Prisma for database access.
+-   **Database:** PostgreSQL.
+-   **Build Tool:** Nx.
+-   **Containerization:** Docker.
 
-Environment variables
-All values are read from the `.env` file at the repository root. See `.env.example` for a complete list and defaults.
+## Running the Project
 
-Notes about `.env` loading by Docker Compose:
-- Docker Compose automatically loads `.env` from the same directory as `docker-compose.yml` when you run commands from that directory.
-- If you invoke Compose from another directory (e.g., via CI or a script), pass the env file explicitly:
-  ```
-  docker compose --env-file /path/to/project/.env -f /path/to/project/docker-compose.yml up -d
-  ```
-  or `cd` to the project root first.
+### With Docker (Recommended)
 
-Key variables:
-- POSTGRES_DB — database name (default `appdb`)
-- POSTGRES_USER — database user (default `appuser`)
-- POSTGRES_PASSWORD — database password (default `applocalpw`)
-- POSTGRES_HOST — hostname used by the API to reach Postgres inside the compose network (default `postgres`)
-- POSTGRES_PORT — host port to expose Postgres (default `5432`)
-- API_PORT — host port to expose the API container (default `3000`)
-- WEB_PORT — host port to expose the Web container (default `8080`)
-- NODE_ENV — node environment for the API container (default `production`)
-- DATABASE_URL — full Postgres connection string used by the API. If you change DB credentials/host/port, update this too.
+This is the easiest way to get the project running, as it sets up the database, API, and web application in one go.
 
-Note: `.env` is not committed. See `.env.example` for reference.
+**Prerequisites:**
 
-How it works
-- Web image builds the Angular app with Nx and serves `dist/apps/web/browser` via Nginx.
-- API image builds the NestJS app with Nx/webpack. The runtime image installs production dependencies from the root manifest to ensure NestJS packages are available at runtime.
-- Postgres runs the official `postgres:latest` image with a persistent volume (`postgres_data`). A healthcheck ensures the API waits until the database is ready.
+-   Docker
+-   Docker Compose
 
-DB project (Prisma) — migrations and seeds
-The repository includes a dedicated Nx project `db` to manage database schema and seed data using Prisma.
+**Steps:**
 
-Files/structure:
-- Prisma schema: `apps/db/prisma/schema.prisma`
-- Seed script: `apps/db/src/seed.ts` (TypeScript, uses `@prisma/client`)
+1.  **Create a `.env` file:**
+    Copy the `.env.example` file to a new file named `.env`. You can leave the default values for a local setup.
 
-Nx targets (run from project root):
-- Generate Prisma client (also runs on `npm install`):
-  ```
-  npx nx run db:generate
-  ```
-- Create/apply dev migration (prompts for a name if needed, updates DB and generates client):
-  ```
-  npx nx run db:migrate-dev
-  ```
-- Apply existing migrations in production-like mode:
-  ```
-  npx nx run db:migrate-deploy
-  ```
-- Reset database (DANGEROUS: drops DB):
-  ```
-  npx nx run db:migrate-reset
-  ```
-- Open Prisma Studio:
-  ```
-  npx nx run db:studio
-  ```
-- Run seed script:
-  ```
-  npx nx run db:seed
-  ```
-
-Database connection
-- All Prisma commands use `DATABASE_URL` from your `.env`. Ensure the Postgres service is running and accessible.
-- With Docker Compose up, the DB is available at `postgres://appuser:applocalpw@localhost:${POSTGRES_PORT}/appdb` on your host. The `.env.example` already provides a matching `DATABASE_URL`.
-
-Typical workflow
-1) Start database (and rest of stack):
-   ```
-   docker compose up -d postgres
-   # or bring up full stack
-   docker compose up -d
-   ```
-2) Evolve the schema in `apps/db/prisma/schema.prisma`.
-3) Create/apply a dev migration:
-   ```
-   npx nx run db:migrate-dev
-   ```
-4) Seed data:
-   ```
-   npx nx run db:seed
-   ```
-5) Commit the generated migration files under `apps/db/prisma/migrations/`.
-
-Common operations
-- Rebuild without cache (useful after dependency changes):
-```
-docker compose build --no-cache
-```
-
-- Restart the stack:
-```
-docker compose up -d --build
-```
-
-- Stop and remove containers (preserving database volume):
-```
-docker compose down
-```
-
-- Reset database volume (DANGEROUS: deletes data):
-```
-docker compose down -v
-```
-
-Troubleshooting
-- Nx cache or project graph errors:
-  - Clear Nx cache locally before building:
-    ```
-    npx nx reset
-    ```
-  - Ensure `.nxignore` and `.dockerignore` are present so build caches are not included in images.
-
-- API dependency resolution errors (e.g., `Cannot find module '@nestjs/common'`):
-  - Rebuild the API image without cache:
-    ```
-    docker compose build --no-cache api
+2.  **Build and run the containers:**
+    ```bash
+    docker-compose up --build
     ```
 
-- Port collisions:
-  - Change `API_PORT`, `WEB_PORT`, and/or `POSTGRES_PORT` in `.env` to free ports and restart with `docker compose up -d`.
+3.  **Access the applications:**
+    -   **Web App:** `http://localhost:8080`
+    -   **API:** `http://localhost:3000`
+    -   **API Docs:** `http://localhost:3000/api`
 
-- Prisma/DB:
-  - If Prisma cannot connect, confirm the `DATABASE_URL` in your `.env` points to the correct host/port. For local host access to Compose’s Postgres, use `localhost:${POSTGRES_PORT}`.
-  - If `@prisma/client` is missing after pulling changes, run `npm install` (which triggers `prisma generate`) or run `npx nx run db:generate` manually.
+### Without Docker (Local Development)
 
-Development notes
-- The API uses a global prefix `api`, set in `apps/api/src/main.ts`. The compose stack exposes the API at `http://localhost:${API_PORT}/api`.
-- If you want the Web container to proxy API requests under the same origin, uncomment the proxy block in `apps/web/nginx.conf` and update the target if needed.
+This approach requires you to set up the database and run the API and web applications separately.
 
-API documentation (Swagger)
-- Swagger UI is enabled for the NestJS API and available at:
-  - Local/dev: `http://localhost:3000/api/docs`
-  - Docker Compose: `http://localhost:${API_PORT}/api/docs` (default `${API_PORT}` is 3000)
-- Configuration lives in `apps/api/src/main.ts` using `@nestjs/swagger` with a Bearer auth scheme preset. Add DTOs and decorators (e.g., `@ApiTags()`, `@ApiProperty()`, `@ApiBearerAuth('bearer')`) in your controllers/services to enrich the generated OpenAPI spec.
+**Prerequisites:**
 
-License
-This project is for assessment purposes. See repository terms if provided.
+-   Node.js 20
+-   PostgreSQL
+
+**Steps:**
+
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+2.  **Set up the database:**
+    -   Make sure you have a PostgreSQL server running.
+    -   Create a `.env` file by copying `.env.example`.
+    -   Update the `DATABASE_URL` in your `.env` file to point to your local PostgreSQL instance.
+    -   Run the database migrations:
+        ```bash
+        npx prisma migrate dev
+        ```
+    -   (Optional) Seed the database with initial data:
+        ```bash
+        npx prisma db seed
+        ```
+
+3.  **Run the applications:**
+    -   **API:**
+        ```bash
+        npx nx serve api
+        ```
+        The API will be available at `http://localhost:3000`.
+
+    -   **Web App:**
+        ```bash
+        npx nx serve web
+        ```
+        The web app will be available at `http://localhost:4200`.
+
+## Current Status
+
+The project is set up with a working Docker and local development environment. The web application is configured for Server-Side Rendering (SSR). The database is managed with Prisma, and includes migrations and a seeding script.
