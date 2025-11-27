@@ -10,6 +10,7 @@
     <p-table
 		#table
         dataKey="id"
+        (onSort)="onSort($event)"
         [value]="(clusters$ | async) ?? []"
     >
         <ng-template #header>
@@ -32,6 +33,7 @@
                     <input
                             pInputText
                             type="text"
+                            placeholder="Filter by name"
                             [(ngModel)]="nameFilter"
                     />
                 </th>
@@ -39,6 +41,7 @@
                     <input
                             pInputText
                             type="text"
+                            placeholder="Filter by region"
                             [(ngModel)]="regionFilter"
                     />
                 </th>
