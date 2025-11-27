@@ -68,16 +68,6 @@ export class ClusterWizard {
 	protected selectedRegion = signal<Region | null>(null);
 	protected searchRegionModel = signal('');
 	protected filteredRegions: Region[];
-	protected readonly disabledAddLabelButton$ =
-		this.clusterForm.controls.labelInput.valueChanges.pipe(
-			startWith(this.clusterForm.controls.labelInput.value),
-			map(
-				labelInput =>
-					!labelInput.key ||
-					!labelInput.value ||
-					this.clusterForm.controls.labels.value.some(label => label?.key === labelInput?.key),
-			),
-		);
 	private formBuilder = inject(FormBuilder);
 	protected clusterForm = this.formBuilder.group({
 		name: this.formBuilder.control('', { validators: [Validators.required] }),
@@ -92,6 +82,16 @@ export class ClusterWizard {
 			validators: [Validators.required, Validators.min(1)],
 		}),
 	});
+	protected readonly disabledAddLabelButton$ =
+		this.clusterForm.controls.labelInput.valueChanges.pipe(
+			startWith(this.clusterForm.controls.labelInput.value),
+			map(
+				labelInput =>
+					!labelInput.key ||
+					!labelInput.value ||
+					this.clusterForm.controls.labels.value.some(label => label?.key === labelInput?.key),
+			),
+		);
 	private readonly versionService = inject(VersionService);
 	private readonly regionService = inject(RegionService);
 	private readonly clustersService = inject(ClustersService);
