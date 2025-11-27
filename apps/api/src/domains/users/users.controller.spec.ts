@@ -6,10 +6,19 @@ describe('UsersController', () => {
 	let controller: UsersController;
 
 	beforeEach(async () => {
-		const module: TestingModule = await Test.createTestingModule({
-			controllers: [UsersController],
-			providers: [UsersService],
-		}).compile();
+  const module: TestingModule = await Test.createTestingModule({
+            controllers: [UsersController],
+            providers: [
+                {
+                    provide: UsersService,
+                    useValue: {
+                        findAll: jest.fn().mockResolvedValue([]),
+                        findOne: jest.fn(),
+                        create: jest.fn(),
+                    },
+                },
+            ],
+        }).compile();
 
 		controller = module.get<UsersController>(UsersController);
 	});

@@ -1,17 +1,44 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
+import { of } from 'rxjs';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { authGuard } from './auth-guard';
+import { AuthService } from 'apps/web/src/app/services/auth/auth.service';
 
 describe('authGuard', () => {
-  const executeGuard: CanActivateFn = (...guardParameters) => 
-      TestBed.runInInjectionContext(() => authGuard(...guardParameters));
+  const executeGuard: CanActivateFn = (...guardParameters) =>
+    TestBed.runInInjectionContext(() => authGuard(...guardParameters));
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: { isAuthenticated: jest.fn().mockReturnValue(of(true)) },
+        },
+      ],
+    });
   });
 
   it('should be created', () => {
     expect(executeGuard).toBeTruthy();
+  });
+
+  it('should navigate to /auth/login when not authenticated', done => {
+    const auth = TestBed.inject(AuthService) as any;
+    auth.isAuthenticated.mockReturnValue(of(false));
+    const router = TestBed.inject(Router);
+    const navSpy = jest.spyOn(router, 'navigate').mockResolvedValue(true as any);
+
+    const result$ = executeGuard({} as any, {} as any) as any;
+    result$.subscribe({
+      next: () => {
+        expect(navSpy).toHaveBeenCalledWith(['/auth/login']);
+        done();
+      },
+      error: done,
+    });
   });
 });

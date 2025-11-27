@@ -6,10 +6,20 @@ describe('ClusterController', () => {
 	let controller: ClusterController;
 
 	beforeEach(async () => {
-		const module: TestingModule = await Test.createTestingModule({
-			controllers: [ClusterController],
-			providers: [ClusterService],
-		}).compile();
+  const module: TestingModule = await Test.createTestingModule({
+            controllers: [ClusterController],
+            providers: [
+                {
+                    provide: ClusterService,
+                    useValue: {
+                        list: jest.fn().mockResolvedValue([]),
+                        create: jest.fn(),
+                        update: jest.fn(),
+                        remove: jest.fn(),
+                    },
+                },
+            ],
+        }).compile();
 
 		controller = module.get<ClusterController>(ClusterController);
 	});

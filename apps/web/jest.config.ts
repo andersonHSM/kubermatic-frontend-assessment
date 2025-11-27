@@ -1,9 +1,24 @@
 export default {
-	displayName: 'web',
-	preset: '../../jest.preset.js',
-	setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-	coverageDirectory: '../../coverage/apps/web',
-	transform: {
+    displayName: 'web',
+    preset: '../../jest.preset.js',
+    setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
+    coverageDirectory: '../../coverage/apps/web',
+    collectCoverageFrom: [
+        '<rootDir>/src/app/services/**/*.ts',
+        '<rootDir>/src/app/guards/**/*.ts',
+        '<rootDir>/src/app/interceptors/**/*.ts',
+        '<rootDir>/src/app/components/clusters/edit-cluster-dialog/*.ts',
+        '!**/*.spec.ts',
+    ],
+    coverageThreshold: {
+        global: {
+            statements: 100,
+            branches: 100,
+            functions: 100,
+            lines: 100,
+        },
+    },
+    transform: {
 		'^.+\\.(ts|mjs|js|html)$': [
 			'jest-preset-angular',
 			{

@@ -1,22 +1,38 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ProjectsPage } from './projects-page';
 
 describe('ProjectsPage', () => {
-	let component: ProjectsPage;
-	let fixture: ComponentFixture<ProjectsPage>;
+    let component: ProjectsPage;
+    let fixture: ComponentFixture<ProjectsPage>;
 
-	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [ProjectsPage],
-		}).compileComponents();
+    beforeEach(async () => {
+        // PrimeNG uses matchMedia; provide a jest mock for JSDOM
+        // @ts-ignore
+        if (!window.matchMedia) {
+            // @ts-ignore
+            window.matchMedia = jest.fn().mockImplementation(query => ({
+                matches: false,
+                media: query,
+                onchange: null,
+                addListener: jest.fn(), // deprecated
+                removeListener: jest.fn(), // deprecated
+                addEventListener: jest.fn(),
+                removeEventListener: jest.fn(),
+                dispatchEvent: jest.fn(),
+            }));
+        }
+        await TestBed.configureTestingModule({
+            imports: [ProjectsPage, RouterTestingModule],
+        }).compileComponents();
 
 		fixture = TestBed.createComponent(ProjectsPage);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 
-	it('should create', () => {
-		expect(component).toBeTruthy();
-	});
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

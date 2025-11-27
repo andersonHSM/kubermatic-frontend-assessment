@@ -6,10 +6,18 @@ describe('AuthController', () => {
 	let controller: AuthController;
 
 	beforeEach(async () => {
-		const module: TestingModule = await Test.createTestingModule({
-			controllers: [AuthController],
-			providers: [AuthService],
-		}).compile();
+  const module: TestingModule = await Test.createTestingModule({
+            controllers: [AuthController],
+            providers: [
+                {
+                    provide: AuthService,
+                    useValue: {
+                        login: jest.fn(),
+                        isAuthenticated: jest.fn(),
+                    },
+                },
+            ],
+        }).compile();
 
 		controller = module.get<AuthController>(AuthController);
 	});
