@@ -7,7 +7,11 @@
                 (onClick)="createCluster()"
         />
     </div>
-    <p-table (onSort)="onSort($event)" [value]="(clusters$ | async) ?? []">
+    <p-table
+		#table
+        dataKey="id"
+        [value]="(clusters$ | async) ?? []"
+    >
         <ng-template #header>
             <tr>
                 <th>Status</th>
@@ -22,33 +26,53 @@
                 <th>Node Count</th>
                 <th class="w-30"></th>
             </tr>
-            <ng-template
-				#body
-				let-cluster
-            >
-                <tr>
-                    <td>{{ cluster.status }}</td>
-                    <td>{{ cluster.name }}</td>
-                    <td>{{ cluster.region.name }}</td>
-                    <td>{{ cluster.version.version }}</td>
-                    <td>{{ cluster.nodeCount }}</td>
-                    <td class="w-30">
-                        <p-confirmpopup></p-confirmpopup>
-                        <div class="flex justify-end gap-6">
-                            <p-button
-                                    (click)="editCluster(cluster)"
-                                    severity="primary"
-                                    icon="pi pi-user-edit"
-                            />
-                            <p-button
-                                    (click)="deleteCluster($event, cluster)"
-                                    severity="danger"
-                                    icon="pi pi-times-circle text-white"
-                            />
-                        </div>
-                    </td>
-                </tr>
-            </ng-template>
+            <tr>
+                <th></th>
+                <th>
+                    <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="nameFilter"
+                    />
+                </th>
+                <th>
+                    <input
+                            pInputText
+                            type="text"
+                            [(ngModel)]="regionFilter"
+                    />
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template
+			#body
+			let-cluster
+        >
+            <tr>
+                <td>{{ cluster.status }}</td>
+                <td>{{ cluster.name }}</td>
+                <td>{{ cluster.region.name }}</td>
+                <td>{{ cluster.version.version }}</td>
+                <td>{{ cluster.nodeCount }}</td>
+                <td class="w-30">
+                    <p-confirmpopup></p-confirmpopup>
+                    <div class="flex justify-end gap-6">
+                        <p-button
+                                (click)="editCluster(cluster)"
+                                severity="primary"
+                                icon="pi pi-user-edit"
+                        />
+                        <p-button
+                                (click)="deleteCluster($event, cluster)"
+                                severity="danger"
+                                icon="pi pi-times-circle text-white"
+                        />
+                    </div>
+                </td>
+            </tr>
         </ng-template>
     </p-table>
     <app-cluster-wizard
