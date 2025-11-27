@@ -14,15 +14,14 @@ COPY . .
 RUN npx nx build web
 
 
-FROM nginx:alpine AS runner
-WORKDIR /usr/share/nginx/html
+FROM node:${NODE_VERSION} AS runner
+WORKDIR /app
 
-# Remove default content and copy built browser assets
-RUN rm -rf ./*
-COPY --from=build /workspace/dist/apps/web/browser ./
+# Copy the output from the build stage
+COPY --from=build /workspace/dist/apps/web ./
 
-# Add SPA-friendly nginx config
-COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
+# Expose the port the app runs on
+EXPOSE 4000
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Serve the app
+CMD ["node", "server/server.mjs"]
