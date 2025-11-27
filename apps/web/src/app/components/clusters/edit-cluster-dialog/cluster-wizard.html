@@ -177,6 +177,8 @@
                                     @if (label && label.value['key']
 									&& label.value['value']) {
                                         <p-tag
+                                                class="cursor-pointer"
+                                                (click)="removeLabel($index)"
                                                 severity="secondary"
                                                 value="{{ label.value['key'] ?? '' }}:{{ label.value['value'] ?? '' }}"
                                         />

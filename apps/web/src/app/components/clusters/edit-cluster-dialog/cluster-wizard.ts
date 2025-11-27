@@ -205,6 +205,10 @@ export class ClusterWizard {
 		this.clusterForm.patchValue({ version: $event.value.version }, { emitEvent: true });
 	}
 
+	protected removeLabel(index: number) {
+		this.clusterForm.controls.labels.removeAt(index);
+	}
+
 	private closeDialogAndNotify() {
 		this.clusterSaved.emit(true);
 		this.visible.set(false);
