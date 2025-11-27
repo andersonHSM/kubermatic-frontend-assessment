@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateClusterDto } from './dto/create-cluster.dto';
+import { CreateClusterDto } from '../cluster/dto/create-cluster.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { CreateClusterDto } from './dto/create-cluster.dto';
+import { CreateClusterDto } from '../cluster/dto/create-cluster.dto';
 import { ProjectsService } from './projects.service';
 
 @ApiBearerAuth()
