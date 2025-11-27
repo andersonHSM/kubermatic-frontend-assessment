@@ -14,11 +14,17 @@ export class ClustersService {
 	public listClusters(
 		projectId: string,
 		sortOrder: 'asc' | 'desc' = 'asc',
-		name: string,
-		region: string,
+		name?: string,
+		region?: string,
 	) {
 		return this.httpClient
-			.get<Project>(`projects/${projectId}/clusters`, { params: { sortOrder, name, region } })
+			.get<Project>(`projects/${projectId}/clusters`, {
+				params: {
+					sortOrder,
+					...(name && { name }),
+					...(region && { region: region.toUpperCase() }),
+				},
+			})
 			.pipe(map(project => project.clusters));
 	}
 

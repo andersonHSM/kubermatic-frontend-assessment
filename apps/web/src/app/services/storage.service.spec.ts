@@ -110,4 +110,23 @@ describe('StorageService', () => {
     // restore window descriptor
     if (original) Object.defineProperty(global as any, 'window', original);
   });
+
+  it('getStorage uses existing window.localStorage (happy path)', () => {
+    jest.restoreAllMocks();
+    const local: Storage = {
+      getItem: jest.fn().mockReturnValue('z'),
+      setItem: jest.fn(),
+      removeItem: jest.fn(),
+      clear: jest.fn(),
+      key: jest.fn(),
+      length: 0,
+    } as any;
+    Object.defineProperty(global as any, 'window', { value: { localStorage: local }, configurable: true });
+    service = TestBed.inject(StorageService);
+    expect(service.getItem('k')).toBe('z');
+    service.setItem('a', 'b');
+    expect(local.setItem).toHaveBeenCalledWith('a', 'b');
+    service.removeItem('a');
+    expect(local.removeItem).toHaveBeenCalledWith('a');
+  });
 });
