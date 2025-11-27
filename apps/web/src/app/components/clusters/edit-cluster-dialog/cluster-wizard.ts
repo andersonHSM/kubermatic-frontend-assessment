@@ -22,7 +22,7 @@ import { InputText } from 'primeng/inputtext';
 import { Slider } from 'primeng/slider';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
-import { take, tap } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 
 import { Cluster } from '../../../models/cluster.model';
 import { Labels } from '../../../models/labels.mdel';
@@ -173,18 +173,25 @@ export class ClusterWizard {
 		if (nodeCount) updatedClusterData = { ...updatedClusterData, nodeCount };
 		if (Object.keys(labels).length > 0) updatedClusterData = { ...updatedClusterData, labels };
 
+		let action$: Observable<unknown>;
+
 		if (this.action() === 'create') {
-			return this.clustersService
-				.createCluster(this.activatedRoute.snapshot.params['id'], updatedClusterData)
-				.pipe(
-					take(1),
-					tap(() => {
-						this.closeDialogAndNotify();
-					}),
-				)
-				.subscribe();
+			action$ = this.clustersService.createCluster(
+				this.activatedRoute.snapshot.params['id'],
+				updatedClusterData,
+			);
+		} else {
+			action$ = this.clustersService.updateCluster(updatedClusterData);
 		}
-		return this.clustersService.updateCluster(updatedClusterData);
+
+		return action$
+			.pipe(
+				take(1),
+				tap(() => {
+					this.closeDialogAndNotify();
+				}),
+			)
+			.subscribe();
 	}
 
 	protected searchRegion($event: AutoCompleteCompleteEvent) {
