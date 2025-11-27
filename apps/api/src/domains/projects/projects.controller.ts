@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiQuery } from '@nestjs/swagger';
+import { CreateClusterDto } from './dto/create-cluster.dto';
 import { ProjectsService } from './projects.service';
 
 @ApiBearerAuth()
@@ -35,5 +36,11 @@ export class ProjectsController {
 		@Query('region') region: string,
 	) {
 		return this.projectsService.findProjectClusters(projectId, sortOrder, name, region);
+	}
+
+	@Post(':project_id/clusters')
+	@ApiParam({ name: 'project_id', type: String })
+	createCluster(@Param('project_id') projectId: string, @Body() body: CreateClusterDto) {
+		return this.projectsService.createCluster(projectId, body);
 	}
 }

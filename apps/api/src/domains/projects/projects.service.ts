@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateClusterDto } from './dto/create-cluster.dto';
 import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
@@ -47,6 +48,29 @@ export class ProjectsService {
 						name: sortOrder === 'desc' ? 'desc' : 'asc',
 					},
 				},
+			},
+		});
+	}
+
+	public async createCluster(projectId: string, body: CreateClusterDto) {
+		const { id } = (await this.prisma.cluster.findFirst({ orderBy: { id: 'desc' } })) ?? {
+			id: 'c-0',
+		};
+
+		const nextId = parseInt(id.split('-')[1], 10) + 1;
+
+		const { regionId, versionId, labels, ...remaining } = body;
+		await this.prisma.cluster.create({
+			data: {
+				...remaining,
+				id: `c-${nextId}`,
+				status: 'pending',
+				labels,
+				version: { connect: { id: versionId } },
+				region: { connect: { id: regionId } },
+				project: { connect: { id: projectId } },
+				createdAt: new Date(),
+				updatedAt: new Date(),
 			},
 		});
 	}
