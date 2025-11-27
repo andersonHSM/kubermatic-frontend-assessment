@@ -161,7 +161,7 @@
                                 </div>
                                 <p-button
                                         (click)="addLabel(key.value, value.value)"
-                                        [disabled]="!key.value || !value.value"
+                                        [disabled]="disabledAddLabelButton$ | async"
                                         class="ml-auto"
                                         label="Add label"
                                         icon="pi pi-plus"

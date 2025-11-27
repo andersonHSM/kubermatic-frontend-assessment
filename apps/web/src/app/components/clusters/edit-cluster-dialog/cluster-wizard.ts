@@ -22,7 +22,7 @@ import { InputText } from 'primeng/inputtext';
 import { Slider } from 'primeng/slider';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
-import { Observable, take, tap } from 'rxjs';
+import { map, Observable, startWith, take, tap } from 'rxjs';
 
 import { Cluster } from '../../../models/cluster.model';
 import { Labels } from '../../../models/labels.mdel';
@@ -68,6 +68,16 @@ export class ClusterWizard {
 	protected selectedRegion = signal<Region | null>(null);
 	protected searchRegionModel = signal('');
 	protected filteredRegions: Region[];
+	protected readonly disabledAddLabelButton$ =
+		this.clusterForm.controls.labelInput.valueChanges.pipe(
+			startWith(this.clusterForm.controls.labelInput.value),
+			map(
+				labelInput =>
+					!labelInput.key ||
+					!labelInput.value ||
+					this.clusterForm.controls.labels.value.some(label => label?.key === labelInput?.key),
+			),
+		);
 	private formBuilder = inject(FormBuilder);
 	protected clusterForm = this.formBuilder.group({
 		name: this.formBuilder.control('', { validators: [Validators.required] }),
@@ -82,7 +92,7 @@ export class ClusterWizard {
 			validators: [Validators.required, Validators.min(1)],
 		}),
 	});
-	private versionService = inject(VersionService);
+	private readonly versionService = inject(VersionService);
 	private readonly regionService = inject(RegionService);
 	private readonly clustersService = inject(ClustersService);
 	private readonly activatedRoute = inject(ActivatedRoute);
