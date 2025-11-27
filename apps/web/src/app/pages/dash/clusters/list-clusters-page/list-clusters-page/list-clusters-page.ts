@@ -3,7 +3,7 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { BehaviorSubject, distinctUntilChanged, filter, map, switchMap } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, filter, map, switchMap, take, tap } from 'rxjs';
 
 import { ClusterWizard } from '../../../../../components/clusters/edit-cluster-dialog/cluster-wizard';
 import { Cluster } from '../../../../../models/cluster.model';
@@ -19,7 +19,7 @@ export class ListClustersPage {
 	protected route = inject(ActivatedRoute);
 	protected visible = signal(false);
 	protected selectedCluster = signal<Cluster | null>(null);
-	protected updateCluster$ = new BehaviorSubject<boolean>(true);
+	protected updateClusters$ = new BehaviorSubject<boolean>(true);
 	protected action: 'edit' | 'create' = 'edit';
 	private readonly clustersService = inject(ClustersService);
 	protected clusters$ = this.route.params.pipe(
@@ -27,7 +27,7 @@ export class ListClustersPage {
 		map(params => params['id']),
 		distinctUntilChanged(),
 		switchMap(projectId =>
-			this.updateCluster$.pipe(switchMap(() => this.clustersService.listClusters(projectId))),
+			this.updateClusters$.pipe(switchMap(() => this.clustersService.listClusters(projectId))),
 		),
 	);
 
@@ -52,10 +52,16 @@ export class ListClustersPage {
 	}
 
 	protected updateList() {
-		this.updateCluster$.next(true);
+		this.updateClusters$.next(true);
 	}
 
 	protected deleteCluster(cluster: Cluster) {
-		this.clustersService.deleteCluster(cluster.id).subscribe(() => {});
+		return this.clustersService
+			.deleteCluster(cluster.id)
+			.pipe(
+				take(1),
+				tap(() => this.updateClusters$.next(true)),
+			)
+			.subscribe();
 	}
 }

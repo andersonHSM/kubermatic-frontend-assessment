@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
+import { ClusterModule } from '../domains/cluster/cluster.module';
 import { AuthModule } from '../domains/auth/auth.module';
 import { ProjectsModule } from '../domains/projects/projects.module';
 import { RegionModule } from '../domains/region/region.module';
@@ -17,6 +18,7 @@ import { AppService } from './app.service';
 		AuthModule,
 		UsersModule,
 		ProjectsModule,
+		ClusterModule,
 		ConfigModule.forRoot({ isGlobal: true }),
 	],
 	controllers: [AppController],
