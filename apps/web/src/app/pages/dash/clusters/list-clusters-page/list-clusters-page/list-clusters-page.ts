@@ -3,7 +3,7 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { distinctUntilChanged, filter, map, switchMap } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, filter, map, switchMap } from 'rxjs';
 
 import { ClusterWizard } from '../../../../../components/clusters/edit-cluster-dialog/cluster-wizard';
 import { Cluster } from '../../../../../models/cluster.model';
@@ -19,13 +19,16 @@ export class ListClustersPage {
 	protected route = inject(ActivatedRoute);
 	protected visible = signal(false);
 	protected selectedCluster = signal<Cluster | null>(null);
+	protected updateCluster$ = new BehaviorSubject<boolean>(true);
 	protected action: 'edit' | 'create' = 'edit';
 	private readonly clustersService = inject(ClustersService);
 	protected clusters$ = this.route.params.pipe(
 		filter(params => params['id']),
 		map(params => params['id']),
 		distinctUntilChanged(),
-		switchMap(projectId => this.clustersService.listClusters(projectId)),
+		switchMap(projectId =>
+			this.updateCluster$.pipe(switchMap(() => this.clustersService.listClusters(projectId))),
+		),
 	);
 
 	constructor() {
@@ -46,5 +49,9 @@ export class ListClustersPage {
 		this.action = 'create';
 		this.visible.set(true);
 		this.selectedCluster.set(null);
+	}
+
+	protected updateList() {
+		this.updateCluster$.next(true);
 	}
 }

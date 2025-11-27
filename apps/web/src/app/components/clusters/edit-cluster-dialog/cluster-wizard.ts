@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, effect, inject, input, model, signal } from '@angular/core';
+import { Component, effect, inject, input, model, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
 	FormArray,
@@ -22,6 +22,7 @@ import { InputText } from 'primeng/inputtext';
 import { Slider } from 'primeng/slider';
 import { Step, StepList, StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Tag } from 'primeng/tag';
+import { take, tap } from 'rxjs';
 
 import { Cluster } from '../../../models/cluster.model';
 import { Labels } from '../../../models/labels.mdel';
@@ -56,8 +57,9 @@ import { VersionService } from '../../../services/version/version.service';
 })
 export class ClusterWizard {
 	public readonly action = input<'edit' | 'create'>('edit');
-	public visible = model(false);
-	public cluster = model<Cluster | null>(null);
+	public readonly visible = model(false);
+	public readonly cluster = model<Cluster | null>(null);
+	public readonly clusterSaved = output<boolean>();
 	protected searchVersionModel = signal('');
 	protected readonly currentStep = signal<number>(1);
 	protected regions = signal<Region[]>([]);
@@ -172,10 +174,15 @@ export class ClusterWizard {
 		if (Object.keys(labels).length > 0) updatedClusterData = { ...updatedClusterData, labels };
 
 		if (this.action() === 'create') {
-			return this.clustersService.createCluster(
-				this.activatedRoute.snapshot.params['id'],
-				updatedClusterData,
-			);
+			return this.clustersService
+				.createCluster(this.activatedRoute.snapshot.params['id'], updatedClusterData)
+				.pipe(
+					take(1),
+					tap(() => {
+						this.closeDialogAndNotify();
+					}),
+				)
+				.subscribe();
 		}
 		return this.clustersService.updateCluster(updatedClusterData);
 	}
@@ -196,6 +203,12 @@ export class ClusterWizard {
 
 	protected onVersionChange($event: AutoCompleteSelectEvent) {
 		this.clusterForm.patchValue({ version: $event.value.version }, { emitEvent: true });
+	}
+
+	private closeDialogAndNotify() {
+		this.clusterSaved.emit(true);
+		this.visible.set(false);
+		this.cluster.set(null);
 	}
 
 	private hydrateClusterData(action: 'edit' | 'create' = 'edit') {

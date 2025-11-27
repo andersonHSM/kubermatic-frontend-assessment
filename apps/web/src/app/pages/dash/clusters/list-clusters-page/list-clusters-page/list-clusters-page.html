@@ -30,5 +30,6 @@
             </ng-template>
         </ng-template>
     </p-table>
-    <app-cluster-wizard [(visible)]="visible" [(cluster)]="selectedCluster" [action]="action"/>
+    <app-cluster-wizard (clusterSaved)="updateList()" [(visible)]="visible" [(cluster)]="selectedCluster"
+                        [action]="action"/>
 </div>

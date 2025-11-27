@@ -22,6 +22,6 @@ export class ClustersService {
 	}
 
 	public createCluster(projectId: string, updatedClusterData: Partial<Cluster>) {
-		console.log({ updatedClusterData, projectId });
+		return this.httpClient.post(`projects/${projectId}/clusters`, updatedClusterData);
 	}
 }
