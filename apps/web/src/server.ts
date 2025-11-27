@@ -39,8 +39,7 @@ app.use(cookieParser());
 app.use(
 	express.static(browserDistFolder, {
 		maxAge: '1y',
-		index: false,
-		redirect: false,
+		redirect: true,
 	}),
 );
 
@@ -50,7 +49,7 @@ app.use(
 app.use('/**', (req, res, next) => {
 	res.cookie('server-cookie', randomUUID());
 
-	if (req?.cookies.token && !req.headers.authorization?.startsWith('Bearer ')) {
+	if (req?.cookies.token && typeof req.headers.authorization === 'string' && !req.headers.authorization?.startsWith('Bearer ')) {
 		req.headers.authorization = `Bearer ${req?.cookies.token}`;
 	}
 

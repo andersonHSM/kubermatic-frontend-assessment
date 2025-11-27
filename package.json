@@ -4,8 +4,7 @@
 	"description": "",
 	"main": "dist/index.js",
 	"scripts": {
-		"build": "tsc",
-		"postinstall": "prisma generate --schema libs/db/prisma/schema.prisma"
+		"build": "tsc"
 	},
 	"devDependencies": {
 		"@angular-devkit/core": "~20.3.0",
@@ -103,6 +102,6 @@
 		"zone.js": "~0.15.0"
 	},
 	"prisma": {
-		"seed": "ts-node apps/db/src/seed.ts"
+		"seed": "ts-node libs/db/src/seed.ts"
 	}
 }
