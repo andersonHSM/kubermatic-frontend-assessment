@@ -24,14 +24,23 @@ export class ListClustersPage {
 	protected visible = signal(false);
 	protected selectedCluster = signal<Cluster | null>(null);
 	protected updateClusters$ = new BehaviorSubject<boolean>(true);
+	protected updateClusterSort$ = new BehaviorSubject<'asc' | 'desc'>('asc');
 	protected action: 'edit' | 'create' = 'edit';
+	private readonly sortOrderMapper: { [k: number]: 'asc' | 'desc' } = { 1: 'asc', [-1]: 'desc' };
 	private readonly clustersService = inject(ClustersService);
 	protected clusters$ = this.route.params.pipe(
 		filter(params => params['id']),
 		map(params => params['id']),
 		distinctUntilChanged(),
 		switchMap(projectId =>
-			this.updateClusters$.pipe(switchMap(() => this.clustersService.listClusters(projectId))),
+			this.updateClusters$.pipe(
+				switchMap(() =>
+					this.updateClusterSort$.pipe(
+						distinctUntilChanged(),
+						switchMap(sortOrder => this.clustersService.listClusters(projectId, sortOrder)),
+					),
+				),
+			),
 		),
 	);
 	private readonly messageService = inject(MessageService);
@@ -94,5 +103,9 @@ export class ListClustersPage {
 					.subscribe();
 			},
 		});
+	}
+
+	protected onSort(event: { field: string; order: number }) {
+		this.updateClusterSort$.next(this.sortOrderMapper[event.order]);
 	}
 }

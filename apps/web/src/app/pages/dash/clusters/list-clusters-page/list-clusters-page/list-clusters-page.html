@@ -7,11 +7,16 @@
                 (onClick)="createCluster()"
         />
     </div>
-    <p-table [value]="(clusters$ | async) ?? []">
+    <p-table (onSort)="onSort($event)" [value]="(clusters$ | async) ?? []">
         <ng-template #header>
             <tr>
                 <th>Status</th>
-                <th>Name</th>
+                <th pSortableColumn="name">
+                    <div class="flex items-center gap-2">
+                        <span>Name</span>
+                        <p-sortIcon field="code"/>
+                    </div>
+                </th>
                 <th>Region</th>
                 <th>Version</th>
                 <th>Node Count</th>
@@ -54,4 +59,3 @@
     />
 </div>
 <p-toast></p-toast>
-

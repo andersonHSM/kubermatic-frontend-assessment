@@ -11,9 +11,9 @@ import { Project } from '../../models/project.model';
 export class ClustersService {
 	private readonly httpClient = inject(HttpClient);
 
-	public listClusters(projectId: string) {
+	public listClusters(projectId: string, sortOrder: 'asc' | 'desc' = 'asc') {
 		return this.httpClient
-			.get<Project>(`projects/${projectId}/clusters`)
+			.get<Project>(`projects/${projectId}/clusters`, { params: { sortOrder } })
 			.pipe(map(project => project.clusters));
 	}
 
