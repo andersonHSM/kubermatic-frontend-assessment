@@ -74,7 +74,7 @@ describe('EditClusterDialog', () => {
 		expect(component['filteredVersions'][0].version).toBe('1.28');
 	});
 
-	it('searchRegion should filter regions case-insensitively', () => {
+ it('searchRegion should filter regions case-insensitively', () => {
 		const regions = [
 			{ id: 'r1', code: 'us-east', name: 'US East' },
 			{ id: 'r2', code: 'eu-west', name: 'EU West' },
@@ -83,7 +83,16 @@ describe('EditClusterDialog', () => {
 		component['searchRegion']({ originalEvent: {} as any, query: 'EU' } as any);
 		expect(component['filteredRegions'].length).toBe(1);
 		expect(component['filteredRegions'][0].code).toBe('eu-west');
-	});
+ });
+
+ it('searchRegion should yield empty list when no matches', () => {
+   component['regions'].set([
+     { id: 'r1', code: 'us-east', name: 'US East' },
+     { id: 'r2', code: 'eu-west', name: 'EU West' },
+   ] as any);
+   component['searchRegion']({ originalEvent: {} as any, query: 'ap-south' } as any);
+   expect(component['filteredRegions']?.length ?? 0).toBe(0);
+ });
 
 	it('onRegionChange should update form and selectedRegion', () => {
 		const regions = [
@@ -96,10 +105,17 @@ describe('EditClusterDialog', () => {
 		expect(component['selectedRegion']()).toEqual(regions[1]);
 	});
 
-	it('onVersionChange should update version in form', () => {
+ it('onVersionChange should update version in form', () => {
 		component['onVersionChange']({ value: { version: '1.29' } } as any);
 		expect(component['clusterForm'].value.version).toBe('1.29');
-	});
+ });
+
+ it('onRegionChange with unknown code should set selectedRegion to null while patching form', () => {
+   component['regions'].set([] as any);
+   component['onRegionChange']({ value: { code: 'unknown' } } as any);
+   expect(component['clusterForm'].value.region).toBe('unknown');
+   expect(component['selectedRegion']()).toBeNull();
+ });
 
 	it('removeLabel should remove by index', () => {
 		component['labels'].push((component as any)['formBuilder'].control({ key: 'k1', value: 'v1' }));
@@ -110,7 +126,7 @@ describe('EditClusterDialog', () => {
 		expect(component['labels'].value?.[0]).toEqual({ key: 'k2', value: 'v2' });
 	});
 
-	it('disabledAddLabelButton$ should be true when key/value missing; false when unique; true when duplicate', fakeAsync(() => {
+ it('disabledAddLabelButton$ should be true when key/value missing; false when unique; true when duplicate', fakeAsync(() => {
 		let val: boolean | undefined;
 		const sub = (component as any)['disabledAddLabelButton$'].subscribe((v: boolean) => (val = v));
 		// initial state has empty key/value -> true
@@ -128,9 +144,9 @@ describe('EditClusterDialog', () => {
 		tick();
 		expect(val).toBe(true);
 		sub.unsubscribe();
-	}));
+ }));
 
-	it('hydrateClusterData should patch form when visible and cluster is set in edit mode', fakeAsync(() => {
+ it('hydrateClusterData should patch form when visible and cluster is set in edit mode', fakeAsync(() => {
 		const mockCluster = {
 			id: 'c1',
 			name: 'cluster-1',
@@ -153,7 +169,32 @@ describe('EditClusterDialog', () => {
 		expect(component['selectedRegion']()).toEqual(mockCluster.region);
 		expect(component['searchVersionModel']()).toBe('1.28');
 		expect(component['searchRegionModel']()).toBe('eu-west');
-	}));
+ }));
+
+ it('hydrateClusterData should do nothing when not visible', fakeAsync(() => {
+   const mockCluster = {
+     id: 'c2',
+     name: 'c2',
+     nodeCount: 2,
+     region: { id: 'r1', code: 'eu-west', name: 'EU West' },
+     version: { id: 'v1', version: '1.28' },
+     labels: { x: '1' },
+   } as any;
+   component['regions'].set([mockCluster.region]);
+   component['versions'].set([mockCluster.version]);
+   // visible remains false
+   component['cluster'].set(mockCluster);
+   // run change detection/effects
+   fixture.detectChanges();
+   tick();
+   // form should still be default
+   expect(component['clusterForm'].value.region).toBe('');
+   expect(component['clusterForm'].value.version).toBe('');
+   expect(component['labels'].length).toBe(0);
+ }));
+
+ // Note: hydrateClusterData is initialized in constructor with action='edit'.
+ // We do not re-register it with a different action to avoid conflicting effects.
 
 	it('onHide should reset form state', () => {
 		// Pre-populate
@@ -178,7 +219,7 @@ describe('EditClusterDialog', () => {
 		expect(component['clusterForm'].value.nodeCount).toBe(1);
 	});
 
-	it('saveCluster should call createCluster when action is create and emit clusterSaved', () => {
+ it('saveCluster should call createCluster when action is create and emit clusterSaved', () => {
 		// arrange data
 		fixture.componentRef.setInput('action', 'create');
 		component['versions'].set([{ id: 'v1', version: '1.28' } as any]);
@@ -195,14 +236,57 @@ describe('EditClusterDialog', () => {
 		component['saveCluster']();
 
 		expect(clustersSvcMock.createCluster).toHaveBeenCalled();
-		expect(emitSpy).toHaveBeenCalledWith(true);
-	});
+  expect(emitSpy).toHaveBeenCalledWith(true);
+    // dialog closed and state reset by closeDialogAndNotify
+    expect(component['visible']()).toBe(false);
+    expect(component['cluster']()).toBeNull();
+  });
 
-	it('saveCluster should call updateCluster when action is edit', () => {
+ it('saveCluster should call updateCluster when action is edit', () => {
 		// default input value is 'edit'
 		const emitSpy = jest.spyOn(component['clusterSaved'], 'emit');
 		component['saveCluster']();
 		expect(clustersSvcMock.updateCluster).toHaveBeenCalled();
 		expect(emitSpy).toHaveBeenCalledWith(true);
-	});
+ });
+
+ it('saveCluster should map labels and set version/region ids when present', () => {
+   component['versions'].set([
+     { id: 'v1', version: '1.28' },
+   ] as any);
+   component['regions'].set([
+     { id: 'rg1', code: 'eu' },
+   ] as any);
+
+   component['clusterForm'].controls.labelInput.patchValue({ key: 'a', value: '1' });
+   (component as any)['addLabel']('a', '1');
+   component['clusterForm'].patchValue({ version: '1.28', region: 'eu', name: 'n1', nodeCount: 2 });
+
+   component['saveCluster']();
+   expect(clustersSvcMock.updateCluster).toHaveBeenCalledWith(
+     expect.objectContaining({
+       labels: { a: '1' },
+       versionId: 'v1',
+       regionId: 'rg1',
+       name: 'n1',
+       nodeCount: 2,
+     }),
+   );
+ });
+
+ it('saveCluster should allow missing lookups (no matching version/region)', () => {
+   component['versions'].set([] as any);
+   component['regions'].set([] as any);
+   component['clusterForm'].patchValue({ version: 'x', region: 'y' });
+   component['saveCluster']();
+   expect(clustersSvcMock.updateCluster).toHaveBeenCalledWith(
+     expect.objectContaining({ versionId: undefined, regionId: undefined }),
+   );
+ });
+
+ it('searchVersion should handle no matches', () => {
+   component['versions'].set([{ id: '1', version: '1.27' }] as any);
+   component['searchVersion']({ originalEvent: {} as any, query: '2.0' } as any);
+   expect(component['filteredVersions']?.length ?? 0).toBe(0);
+ });
 });

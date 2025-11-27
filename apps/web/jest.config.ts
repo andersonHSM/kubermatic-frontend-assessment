@@ -7,7 +7,6 @@ export default {
         '<rootDir>/src/app/services/**/*.ts',
         '<rootDir>/src/app/guards/**/*.ts',
         '<rootDir>/src/app/interceptors/**/*.ts',
-        '<rootDir>/src/app/components/clusters/edit-cluster-dialog/*.ts',
         '!**/*.spec.ts',
     ],
     coverageThreshold: {

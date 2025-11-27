@@ -72,4 +72,4 @@ async function bootstrap() {
 	Logger.log(`📘 Swagger docs available at: http://localhost:${port}/${globalPrefix}/docs`);
 }
 
-bootstrap();
+bootstrap().catch(console.error);
