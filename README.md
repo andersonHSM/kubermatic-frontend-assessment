@@ -92,6 +92,26 @@ This approach requires you to set up the database and run the API and web applic
         ```
         The web app will be available at `http://localhost:4200`.
 
+## Running Tests
+
+This project uses Jest for testing. You can run the tests for each application separately.
+
+-   **API Tests:**
+    ```bash
+    npx nx test api
+    ```
+
+-   **Web App Tests:**
+    ```bash
+    npx nx test web
+    ```
+
+You can also run all tests in the project with the following command:
+
+```bash
+npx nx run-many --target=test
+```
+
 ## Current Status
 
 The project is set up with a working Docker and local development environment. The web application is configured for Server-Side Rendering (SSR). The database is managed with Prisma, and includes migrations and a seeding script.
