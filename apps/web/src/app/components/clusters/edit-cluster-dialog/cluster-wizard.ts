@@ -74,24 +74,24 @@ export class ClusterWizard {
 		version: this.formBuilder.control('', { validators: [Validators.required] }),
 		region: this.formBuilder.control('', { validators: [Validators.required] }),
 		labels: this.formBuilder.array<{ key: string; value: string }>([]),
-		labelInput: this.formBuilder.group({
-			key: this.formBuilder.control('', { validators: [Validators.required] }),
-			value: this.formBuilder.control('', { validators: [Validators.required] }),
-		}),
 		nodeCount: this.formBuilder.control(1, {
-			validators: [Validators.required, Validators.min(1)],
+			validators: [Validators.required, Validators.min(1), Validators.max(100)],
 		}),
 	});
-	protected readonly disabledAddLabelButton$ =
-		this.clusterForm.controls.labelInput.valueChanges.pipe(
-			startWith(this.clusterForm.controls.labelInput.value),
-			map(
-				labelInput =>
-					!labelInput.key ||
-					!labelInput.value ||
-					this.clusterForm.controls.labels.value.some(label => label?.key === labelInput?.key),
-			),
-		);
+	protected labelInput = this.formBuilder.group({
+		key: this.formBuilder.control('', { validators: [Validators.required] }),
+		value: this.formBuilder.control('', { validators: [Validators.required] }),
+	});
+
+	protected readonly disabledAddLabelButton$ = this.labelInput.valueChanges.pipe(
+		startWith(this.labelInput.value),
+		map(
+			labelInput =>
+				!labelInput.key ||
+				!labelInput.value ||
+				this.clusterForm.controls.labels.value.some(label => label?.key === labelInput?.key),
+		),
+	);
 	private readonly versionService = inject(VersionService);
 	private readonly regionService = inject(RegionService);
 	private readonly clustersService = inject(ClustersService);
@@ -99,6 +99,7 @@ export class ClusterWizard {
 
 	constructor() {
 		this.currentStep.set(1);
+
 		this.hydrateClusterData(this.action());
 		this.versionService
 			.findAll()
@@ -145,6 +146,7 @@ export class ClusterWizard {
 
 	protected increaseNodeCount() {
 		const currentNodeCount = this.clusterForm?.value?.nodeCount ?? 0;
+		if (currentNodeCount >= 100) return;
 		this.clusterForm.patchValue(
 			{ nodeCount: currentNodeCount + 1 },
 			{ emitEvent: true, onlySelf: false },
@@ -153,7 +155,7 @@ export class ClusterWizard {
 
 	protected addLabel(key: string, value: string) {
 		this.clusterForm.controls.labels.push(this.formBuilder.control({ key, value }), {});
-		this.clusterForm.controls.labelInput.reset({ key: '', value: '' });
+		this.labelInput.reset({ key: '', value: '' });
 	}
 
 	protected searchVersion($event: AutoCompleteCompleteEvent) {
@@ -236,7 +238,7 @@ export class ClusterWizard {
 		effect(() => {
 			if (this.visible() && action === 'edit' && this.cluster()) {
 				this.clusterForm.patchValue({
-					nodeCount: this.cluster()?.nodeCount ?? 0,
+					nodeCount: this.cluster()?.nodeCount ?? 1,
 					region: this.cluster()?.region.code,
 					version: this.cluster()?.version.version,
 					name: this.cluster()?.name,
@@ -250,6 +252,8 @@ export class ClusterWizard {
 						emitEvent: true,
 					});
 				});
+			} else {
+				this.clusterForm.controls.name.enable({ emitEvent: false });
 			}
 		});
 	}

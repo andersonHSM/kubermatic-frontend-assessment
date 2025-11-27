@@ -106,6 +106,7 @@
                                         (click)="decreaseNodeCount()"
                                 />
                                 <input
+                                        max="100"
                                         id="cluster-node-count"
                                         ngDefaultControl
                                         type="text"
@@ -130,7 +131,7 @@
                             <div class="grid grid-rows-2 gap-2">
                                 <div
                                         class="grid grid-cols-2 gap-2"
-                                        formGroupName="labelInput"
+                                        [formGroup]="labelInput"
                                 >
                                     <p-float-label
                                             class="w-full"
@@ -266,6 +267,7 @@
                                 label="Confirm"
                                 icon="pi pi-check"
                                 iconPos="right"
+                                [disabled]="clusterForm.invalid"
                                 (onClick)="saveCluster()"
                         />
                     </div>
