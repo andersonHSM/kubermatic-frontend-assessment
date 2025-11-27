@@ -13,3 +13,4 @@ coverage
 tmp
 *.local
 **/.env
+libs/db/output
