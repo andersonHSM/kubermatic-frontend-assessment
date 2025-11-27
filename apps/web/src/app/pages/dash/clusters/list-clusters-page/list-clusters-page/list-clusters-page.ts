@@ -1,8 +1,11 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
+import { ConfirmPopup } from 'primeng/confirmpopup';
 import { TableModule } from 'primeng/table';
+import { Toast } from 'primeng/toast';
 import { BehaviorSubject, distinctUntilChanged, filter, map, switchMap, take, tap } from 'rxjs';
 
 import { ClusterWizard } from '../../../../../components/clusters/edit-cluster-dialog/cluster-wizard';
@@ -11,7 +14,8 @@ import { ClustersService } from '../../../../../services/clusters/clusters.servi
 
 @Component({
 	selector: 'app-list-clusters-page',
-	imports: [AsyncPipe, TableModule, Button, ClusterWizard],
+	imports: [AsyncPipe, TableModule, Button, ClusterWizard, Toast, ConfirmPopup],
+	providers: [MessageService, ConfirmationService],
 	templateUrl: './list-clusters-page.html',
 	styleUrl: './list-clusters-page.css',
 })
@@ -30,6 +34,8 @@ export class ListClustersPage {
 			this.updateClusters$.pipe(switchMap(() => this.clustersService.listClusters(projectId))),
 		),
 	);
+	private readonly messageService = inject(MessageService);
+	private readonly confirmationService = inject(ConfirmationService);
 
 	constructor() {
 		effect(() => {
@@ -55,13 +61,38 @@ export class ListClustersPage {
 		this.updateClusters$.next(true);
 	}
 
-	protected deleteCluster(cluster: Cluster) {
-		return this.clustersService
-			.deleteCluster(cluster.id)
-			.pipe(
-				take(1),
-				tap(() => this.updateClusters$.next(true)),
-			)
-			.subscribe();
+	protected deleteCluster(event: Event, cluster: Cluster) {
+		this.confirmationService.confirm({
+			target: event.currentTarget as EventTarget,
+			message: 'Do you want to delete this cluster?',
+			icon: 'pi pi-info-circle',
+			rejectButtonProps: {
+				label: 'Cancel',
+				severity: 'secondary',
+				outlined: true,
+			},
+			acceptButtonProps: {
+				label: 'Delete',
+				severity: 'danger',
+			},
+			accept: () => {
+				this.clustersService
+					.deleteCluster(cluster.id)
+					.pipe(
+						take(1),
+
+						tap(() => {
+							this.messageService.add({
+								severity: 'info',
+								summary: 'Confirmed',
+								detail: 'Cluster deleted',
+								life: 3000,
+							});
+							this.updateClusters$.next(true);
+						}),
+					)
+					.subscribe();
+			},
+		});
 	}
 }

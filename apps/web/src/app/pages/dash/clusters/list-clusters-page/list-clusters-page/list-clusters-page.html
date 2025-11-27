@@ -28,6 +28,7 @@
                     <td>{{ cluster.version.version }}</td>
                     <td>{{ cluster.nodeCount }}</td>
                     <td class="w-30">
+                        <p-confirmpopup></p-confirmpopup>
                         <div class="flex justify-end gap-6">
                             <p-button
                                     (click)="editCluster(cluster)"
@@ -35,7 +36,7 @@
                                     icon="pi pi-user-edit"
                             />
                             <p-button
-                                    (click)="deleteCluster(cluster)"
+                                    (click)="deleteCluster($event, cluster)"
                                     severity="danger"
                                     icon="pi pi-times-circle text-white"
                             />
@@ -52,3 +53,5 @@
             [action]="action"
     />
 </div>
+<p-toast></p-toast>
+
