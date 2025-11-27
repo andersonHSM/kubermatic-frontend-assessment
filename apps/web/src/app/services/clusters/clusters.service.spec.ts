@@ -34,7 +34,7 @@ describe('ClustersService', () => {
 		);
 		expect(req.request.params.get('sortOrder')).toBe('desc');
 		expect(req.request.params.get('name')).toBe('name');
-		expect(req.request.params.get('region')).toBe('region');
+		expect(req.request.params.get('region')).toBe('REGION');
 		req.flush({ clusters } as any);
 	});
 
@@ -47,8 +47,8 @@ describe('ClustersService', () => {
 		// default sortOrder should be asc
 		expect(req.request.params.get('sortOrder')).toBe('asc');
 		// name/region are passed as undefined -> serialized as 'undefined' by HttpParams
-		expect(req.request.params.get('name')).toBe('undefined');
-		expect(req.request.params.get('region')).toBe('undefined');
+		expect(req.request.params.get('name')).toBeNull();
+		expect(req.request.params.get('region')).toBeNull();
 		req.flush({ clusters: [] } as any);
 	});
 
