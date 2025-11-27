@@ -7,11 +7,12 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { ConfirmPopup } from 'primeng/confirmpopup';
 import { InputText } from 'primeng/inputtext';
-import { TableFilterEvent, TableModule } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
 import {
 	BehaviorSubject,
 	combineLatest,
+	debounceTime,
 	distinctUntilChanged,
 	filter,
 	map,
@@ -59,8 +60,9 @@ export class ListClustersPage {
 		),
 		this.updateClusters$,
 		this.updateClusterSort$.pipe(distinctUntilChanged()),
-		toObservable(this.nameFilter),
-		toObservable(this.regionFilter),
+		...[toObservable(this.nameFilter), toObservable(this.regionFilter)].map(observable =>
+			observable.pipe(debounceTime(300), distinctUntilChanged()),
+		),
 	]).pipe(
 		switchMap(([projectId, , sortOrder, name, region]) => {
 			return this.clustersService.listClusters(projectId, sortOrder, name, region);
