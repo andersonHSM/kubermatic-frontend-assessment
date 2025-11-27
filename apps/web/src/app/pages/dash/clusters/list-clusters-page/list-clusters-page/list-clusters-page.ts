@@ -54,4 +54,8 @@ export class ListClustersPage {
 	protected updateList() {
 		this.updateCluster$.next(true);
 	}
+
+	protected deleteCluster(cluster: Cluster) {
+		this.clustersService.deleteCluster(cluster.id).subscribe(() => {});
+	}
 }

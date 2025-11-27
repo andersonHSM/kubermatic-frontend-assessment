@@ -1,7 +1,11 @@
 <div class="flex flex-col gap-4">
     <div class="flex w-full justify-between">
         <h1 class="text-3xl">List Clusters</h1>
-        <p-button label="Add Cluster" icon="pi pi-plus" (onClick)="createCluster()"/>
+        <p-button
+                label="Add Cluster"
+                icon="pi pi-plus"
+                (onClick)="createCluster()"
+        />
     </div>
     <p-table [value]="(clusters$ | async) ?? []">
         <ng-template #header>
@@ -13,7 +17,10 @@
                 <th>Node Count</th>
                 <th class="w-30"></th>
             </tr>
-            <ng-template #body let-cluster>
+            <ng-template
+				#body
+				let-cluster
+            >
                 <tr>
                     <td>{{ cluster.status }}</td>
                     <td>{{ cluster.name }}</td>
@@ -22,14 +29,26 @@
                     <td>{{ cluster.nodeCount }}</td>
                     <td class="w-30">
                         <div class="flex justify-end gap-6">
-                            <p-button (click)="editCluster(cluster)" severity="primary" icon="pi pi-user-edit"/>
-                            <p-button severity="danger" icon="pi pi-times-circle"/>
+                            <p-button
+                                    (click)="editCluster(cluster)"
+                                    severity="primary"
+                                    icon="pi pi-user-edit"
+                            />
+                            <p-button
+                                    (click)="deleteCluster(cluster)"
+                                    severity="danger"
+                                    icon="pi pi-times-circle"
+                            />
                         </div>
                     </td>
                 </tr>
             </ng-template>
         </ng-template>
     </p-table>
-    <app-cluster-wizard (clusterSaved)="updateList()" [(visible)]="visible" [(cluster)]="selectedCluster"
-                        [action]="action"/>
+    <app-cluster-wizard
+            (clusterSaved)="updateList()"
+            [(visible)]="visible"
+            [(cluster)]="selectedCluster"
+            [action]="action"
+    />
 </div>

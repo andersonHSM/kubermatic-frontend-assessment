@@ -17,11 +17,15 @@ export class ClustersService {
 			.pipe(map(project => project.clusters));
 	}
 
-	public updateCluster(updatedClusterData: Partial<Cluster>) {
-		console.log(updatedClusterData);
-	}
-
 	public createCluster(projectId: string, updatedClusterData: Partial<Cluster>) {
 		return this.httpClient.post(`projects/${projectId}/clusters`, updatedClusterData);
+	}
+
+	public updateCluster(updatedClusterData: Partial<Cluster>) {
+		return this.httpClient.patch(`clusters/${updatedClusterData.id}`, updatedClusterData);
+	}
+
+	public deleteCluster(id: string) {
+		return this.httpClient.delete(`clusters/${id}`);
 	}
 }
