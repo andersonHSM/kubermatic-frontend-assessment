@@ -8,11 +8,11 @@ export class ClusterController {
 
 	@Patch(':id')
 	update(@Param('id') id: string, @Body() updateClusterDto: UpdateClusterDto) {
-		return this.clusterService.update(+id, updateClusterDto);
+		return this.clusterService.update(id, updateClusterDto);
 	}
 
 	@Delete(':id')
 	remove(@Param('id') id: string) {
-		return this.clusterService.remove(+id);
+		return this.clusterService.remove(id);
 	}
 }

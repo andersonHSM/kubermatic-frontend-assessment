@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 import { UpdateClusterDto } from './dto/update-cluster.dto';
 
 @Injectable()
 export class ClusterService {
-	update(id: number, updateClusterDto: UpdateClusterDto) {
-		return `This action updates a #${id} cluster`;
+	constructor(private readonly prismaService: PrismaService) {}
+	update(id: string, updateClusterDto: UpdateClusterDto) {
+		return this.prismaService.cluster.update({ data: { ...updateClusterDto }, where: { id } });
 	}
 
-	remove(id: number) {
-		return `This action removes a #${id} cluster`;
+	remove(id: string) {
+		return this.prismaService.cluster.delete({ where: { id } });
 	}
 }
