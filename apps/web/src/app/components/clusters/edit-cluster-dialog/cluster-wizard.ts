@@ -78,7 +78,7 @@ export class ClusterWizard {
 			key: this.formBuilder.control('', { validators: [Validators.required] }),
 			value: this.formBuilder.control('', { validators: [Validators.required] }),
 		}),
-		nodeCount: this.formBuilder.control(0, {
+		nodeCount: this.formBuilder.control(1, {
 			validators: [Validators.required, Validators.min(1)],
 		}),
 	});
@@ -118,12 +118,12 @@ export class ClusterWizard {
 		this.selectedRegion.set(null);
 		this.searchRegionModel.set('');
 		this.searchVersionModel.set('');
-		this.clusterForm.reset({ nodeCount: 0 });
+		this.clusterForm.reset({ nodeCount: 1 });
 	}
 
 	protected decreaseNodeCount() {
-		const currentNodeCount = this.clusterForm?.value?.nodeCount ?? 0;
-		if (currentNodeCount < 1) {
+		const currentNodeCount = this.clusterForm?.value?.nodeCount ?? 1;
+		if (currentNodeCount <= 1) {
 			return;
 		}
 
@@ -220,6 +220,7 @@ export class ClusterWizard {
 					version: this.cluster()?.version.version,
 					name: this.cluster()?.name,
 				});
+				this.clusterForm.controls.name.disable({ emitEvent: false });
 				this.selectedRegion.set(this.cluster()?.region ?? null);
 				this.searchVersionModel.set(this.cluster()?.version.version ?? '');
 				this.searchRegionModel.set(this.cluster()?.region.code ?? '');
